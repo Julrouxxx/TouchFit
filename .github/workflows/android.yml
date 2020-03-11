@@ -23,5 +23,5 @@ jobs:
       uses: actions/upload-artifact@v1.0.0
       with:
       # Artifact name
-        name: app-debug.apk
-        path: outputs/apk/debug/
+        name: TouchFit
+        path: build/outputs/apk/debug/
