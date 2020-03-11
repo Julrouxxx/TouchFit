@@ -24,4 +24,4 @@ jobs:
       with:
       # Artifact name
         name: TouchFit
-        path: build/outputs/apk/debug/
+        path: app/build/outputs/apk/debug/
