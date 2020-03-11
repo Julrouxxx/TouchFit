@@ -19,9 +19,9 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Download artifact
-      uses: actions/download-artifact@v1.0.0
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
       with:
       # Artifact name
-        name: app-debug
-        path: outputs/apk/debug/ 
+        name: app-debug.apk
+        path: outputs/apk/debug/
