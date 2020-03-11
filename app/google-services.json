@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "713768225927",
+    "firebase_url": "https://touchfit-6dd68.firebaseio.com",
+    "project_id": "touchfit-6dd68",
+    "storage_bucket": "touchfit-6dd68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713768225927:android:9eec772a10891cc06afc22",
+        "android_client_info": {
+          "package_name": "uqac.bigbrainstudio.touchfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "713768225927-gf1srn7jum18a56darj9qb9vcl0rbmd1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOf1Gl8FH60JCxFZyB-6vTXwCxMAEJ7Ng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "713768225927-gf1srn7jum18a56darj9qb9vcl0rbmd1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
