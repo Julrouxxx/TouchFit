@@ -8,10 +8,10 @@ public class DevicesManager  {
     public ArrayList<Devices> devices = new ArrayList<>();
 
     DevicesManager() {
-        devices.add(new Devices(0, "127.0.0.1"));
-        devices.add(new Devices(1, "192.168.2.63"));
-        devices.add(new Devices(2, "192.168.2.47"));
-        devices.add(new Devices(3, "192.168.2.120"));
+        devices.add(new Devices(0));
+        devices.add(new Devices(1));
+        devices.add(new Devices(2));
+        devices.add(new Devices(3));
         //TODO: Load from sql
     }
     public Devices getDevicesByIp(InetAddress ip){

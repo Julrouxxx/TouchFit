@@ -7,12 +7,10 @@ public class Devices {
     private int id;
     private String name;
     private InetAddress ip;
-    private String stringIP;
     private String hostname;
     private boolean connected;
-    public Devices(int id, String stringIP){
+    public Devices(int id){
         this.id = id;
-        this.stringIP = stringIP;
         this.name = "TestLight"; //TODO: REMOVE
     }
 
@@ -27,7 +25,6 @@ public class Devices {
     public InetAddress getIp() {
         return ip;
     }
-
     public void setHostname(String hostname) {
         this.hostname = hostname;
     }
@@ -47,11 +44,6 @@ public class Devices {
     public void setConnected(boolean connected) {
         this.connected = connected;
     }
-
-    public String getStringIP() {
-        return stringIP;
-    }
-
 
 
     public void turnOn(){
