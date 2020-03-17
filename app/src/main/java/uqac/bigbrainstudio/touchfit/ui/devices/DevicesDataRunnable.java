@@ -1,8 +1,12 @@
 package uqac.bigbrainstudio.touchfit.ui.devices;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.snackbar.Snackbar;
+import uqac.bigbrainstudio.touchfit.R;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -36,7 +40,14 @@ public class DevicesDataRunnable extends AsyncTask<Devices, Void, Void> {
             e.printStackTrace();
         }
         DatagramSocket client_socket = null;
-        for(Devices device : devices)
+        for(Devices device : devices) {
+            if(broadcast == null) {
+                Snackbar.make(recyclerView.get(), R.string.connect_to_wifi, Snackbar.LENGTH_INDEFINITE).setAction(R.string.activate_wifi, v -> {
+                    WifiManager wifiManager = (WifiManager) recyclerView.get().getContext().getSystemService(Context.WIFI_SERVICE);
+                    wifiManager.setWifiEnabled(true);
+                }).show();
+                return null;
+            }
             try {
                 device.setConnected(false);
                 client_socket = new DatagramSocket(3255);
@@ -68,6 +79,7 @@ public class DevicesDataRunnable extends AsyncTask<Devices, Void, Void> {
                     Objects.requireNonNull(recyclerView.get().getAdapter()).notifyItemChanged(device.getId());
                 });
             }
+        }
         return null;
     }
 }

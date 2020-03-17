@@ -22,5 +22,7 @@
     <string name="action_sign_in_ano">Go Anonymous</string>
     <string name="anonymous">Anonymous</string>
     <string name="logout">Logout</string>
+    <string name="connect_to_wifi">Please activate WiFi</string>
+    <string name="activate_wifi">Activate</string>
 
 </resources>
