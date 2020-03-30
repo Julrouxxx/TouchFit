@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+
     <application
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
@@ -14,6 +18,12 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity
+                android:name=".ui.devices.AddDevicesActivity"
+                android:label="@string/add_new_light"
+                android:windowSoftInputMode="adjustResize"
+                >
+        </activity>
         <activity
                 android:name=".ui.LoginActivity"
                 android:label="@string/title_activity_login">

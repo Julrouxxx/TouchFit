@@ -46,6 +46,7 @@ public class Devices {
     }
 
 
+
     public void turnOn(){
         new DevicesUDPSend(this).start();
     }

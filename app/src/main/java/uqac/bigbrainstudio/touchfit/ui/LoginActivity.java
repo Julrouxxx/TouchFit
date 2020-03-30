@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w("TouchFit", "Google sign in failed", e);
+                Snackbar.make(loadingProgressBar, R.string.sign_in_failed_connection, Snackbar.LENGTH_LONG).show();
                 // [START_EXCLUDE]
                loadingProgressBar.setVisibility(View.INVISIBLE);
                 // [END_EXCLUDE]
@@ -127,7 +128,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } else {
             // If sign in fails, display a message to the user.
             Log.w("TouchFit", "signInWithCredential:failure", task.getException());
-            Snackbar.make(findViewById(R.id.login), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.login), R.string.auth_failed, Snackbar.LENGTH_SHORT).show();
         }
     }
 }

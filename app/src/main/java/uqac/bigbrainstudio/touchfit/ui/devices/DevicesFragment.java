@@ -1,6 +1,7 @@
 package uqac.bigbrainstudio.touchfit.ui.devices;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import uqac.bigbrainstudio.touchfit.R;
 
 import java.util.ArrayList;
@@ -54,6 +54,8 @@ public class DevicesFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,18 +68,16 @@ public class DevicesFragment extends Fragment {
             devicesList.clear();
             devicesList.addAll(DevicesManager.instance.devices);
 
-            new DevicesDataRunnable(recyclerView).execute(devicesList.toArray(new Devices[0]));
-            mSwipeRefreshLayout.setRefreshing(false);
+            new DevicesDataRunnable(recyclerView, mSwipeRefreshLayout).execute(devicesList.toArray(new Devices[0]));
         });
 
 
-
         FloatingActionButton fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(v -> Snackbar.make(v, R.string.app_name, Snackbar.LENGTH_SHORT).show());
+        fab.setOnClickListener(v -> startActivity(new Intent(getContext(), AddDevicesActivity.class)));
         if (view.findViewById(R.id.list) instanceof RecyclerView) {
             recyclerView = view.findViewById(R.id.list);
             Context context = recyclerView.getContext();
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context,DividerItemDecoration.VERTICAL);
+            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
             recyclerView.addItemDecoration(dividerItemDecoration);
             devicesList = new ArrayList<>();
             MyDevicesRecyclerViewAdapter adapter = new MyDevicesRecyclerViewAdapter(devicesList, mListener);

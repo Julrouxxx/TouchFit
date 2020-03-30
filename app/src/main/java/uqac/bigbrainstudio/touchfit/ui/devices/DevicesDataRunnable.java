@@ -5,6 +5,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.snackbar.Snackbar;
 import uqac.bigbrainstudio.touchfit.R;
 
@@ -16,9 +17,16 @@ import java.util.Objects;
 
 public class DevicesDataRunnable extends AsyncTask<Devices, Void, Void> {
     private WeakReference<RecyclerView> recyclerView;
+    private WeakReference<SwipeRefreshLayout> mSwipeRefreshLayout;
     public DevicesDataRunnable(RecyclerView recyclerView){
         this.recyclerView = new WeakReference<>(recyclerView);
     }
+
+    public DevicesDataRunnable(RecyclerView recyclerView, SwipeRefreshLayout mSwipeRefreshLayout) {
+        this.recyclerView = new WeakReference<>(recyclerView);
+        this.mSwipeRefreshLayout = new WeakReference<>(mSwipeRefreshLayout);
+    }
+
     @Override
     protected Void doInBackground(Devices... devices) {
         InetAddress broadcast = null;
@@ -75,11 +83,15 @@ public class DevicesDataRunnable extends AsyncTask<Devices, Void, Void> {
             }finally {
                 assert client_socket != null;
                 client_socket.close();
-                recyclerView.get().post(() -> {
-                    Objects.requireNonNull(recyclerView.get().getAdapter()).notifyItemChanged(device.getId());
-                });
+                recyclerView.get().post(() -> Objects.requireNonNull(recyclerView.get().getAdapter()).notifyItemChanged(device.getId()));
             }
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        if(mSwipeRefreshLayout != null) mSwipeRefreshLayout.get().setRefreshing(false);
     }
 }

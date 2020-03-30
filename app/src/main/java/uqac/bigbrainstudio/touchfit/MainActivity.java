@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
         public GetBitmapFromURLAsync(ImageView imageView){
             this.imageView = new WeakReference<>(imageView);
         }
+
         @Override
         protected Bitmap doInBackground(String... params) {
             for (String s : params) {
@@ -121,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
                     InputStream input = connection.getInputStream();
                     return BitmapFactory.decodeStream(input);
                 } catch (IOException e) {
-                    e.printStackTrace();
                     return null;
                 }
 
@@ -129,8 +129,10 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
             return null;
         }
 
+
         @Override
         protected void onPostExecute(Bitmap bitmap) {
+            if(bitmap != null)
             imageView.get().setImageBitmap(getRoundedCornerBitmap(bitmap));
         }
         Bitmap getRoundedCornerBitmap(Bitmap bitmap) {

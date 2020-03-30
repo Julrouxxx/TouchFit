@@ -24,5 +24,17 @@
     <string name="logout">Logout</string>
     <string name="connect_to_wifi">Please activate WiFi</string>
     <string name="activate_wifi">Activate</string>
+    <string name="add_new_light">Add new light</string>
+    <string name="next">Next</string>
+    <string name="choose_wifi">Choose Light</string>
+    <string name="accept_location_permission">Can\'t scan nearby devices, please accept the permission</string>
+    <string name="not_found">No LightDevice found!</string>
+    <string name="connect_to_your_wifi">Please connect to your WiFi first</string>
+    <string name="choose_a_light">Choose a light: </string>
+    <string name="network_settings">%s\'s settings: </string>
+    <string name="security_s">Security: %s</string>
+    <string name="wifi_password">Wifi Password</string>
+    <string name="sign_in_failed_connection">Google sign in failed, please check your connection</string>
+    <string name="auth_failed">Authentication Failed.</string>
 
 </resources>
