@@ -1,6 +1,7 @@
 package uqac.bigbrainstudio.touchfit.ui.devices;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -127,6 +128,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
     }
 
     @SuppressWarnings("deprecation")
+
     private void scan() {
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         mWifiManager.setWifiEnabled(true);
@@ -136,7 +138,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
             Toast.makeText(this, R.string.connect_to_your_wifi, Toast.LENGTH_LONG).show();
             return;
         }
-
+        @SuppressLint("MissingPermission")
         WifiConfiguration actualWifi = mWifiManager.getConfiguredNetworks().stream().filter(w -> w.networkId == mWifiManager.getConnectionInfo().getNetworkId()).findFirst().orElse(null);
         //Log.i("TouchFit", "scan: " + mWifiManager.getConfiguredNetworks().stream().filter(w -> w.status == WifiConfiguration.Status.CURRENT).findFirst().get().allowedKeyManagement);
         TextView networkTextView = findViewById(R.id.networkTextView);
