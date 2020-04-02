@@ -8,7 +8,7 @@ public class DevicesManager  {
     public ArrayList<Devices> devices = new ArrayList<>();
 
     DevicesManager() {
-
+        devices.add(new Devices(0));
         //TODO: Load from sql
     }
     public Devices getDevicesByIp(InetAddress ip){

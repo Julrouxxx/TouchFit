@@ -14,7 +14,6 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
@@ -54,10 +53,11 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
                 if (mWifiManager.getConnectionInfo().getSSID().startsWith("\"LightDevice-"))
                     new DeviceConnector(context, actualSSID, password.getText().toString(), keyMgt).start();
             }
-            if(networkInfo.getDetailedState() == NetworkInfo.DetailedState.AUTHENTICATING){
-                if(mWifiManager.getConnectionInfo().getSSID().equals(actualSSID)){
+            if (networkInfo.getDetailedState() == NetworkInfo.DetailedState.OBTAINING_IPADDR) {
+                if (mWifiManager.getConnectionInfo().getSSID().equals(actualSSID)) {
                     unregisterReceiver(mWifiConnect);
                     DevicesManager.instance.devices.add(new Devices(DevicesManager.instance.devices.size()));
+
                     finish();
                 }
             }
@@ -224,12 +224,11 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
         @Override
         public void run() {
             try {
-                sleep(1000);
+                sleep(2000);
                 DatagramSocket client_socket = new DatagramSocket(PORT);
                 byte[] data = (wifi + "\n" + password + "\n" + keyMgmt + "\n" + DevicesManager.instance.devices.size() + "\n").getBytes();
                 DatagramPacket send_packet = new DatagramPacket(data, data.length, InetAddress.getByName("10.0.0.5"), PORT);
                 client_socket.send(send_packet);
-                Log.i("TouchFit Thread", "run: PacketSend");
                 client_socket.close();
                 WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 mWifiManager.removeNetwork(mWifiManager.getConnectionInfo().getNetworkId());
