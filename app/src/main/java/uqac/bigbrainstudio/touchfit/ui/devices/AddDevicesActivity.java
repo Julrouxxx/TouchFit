@@ -1,7 +1,6 @@
 package uqac.bigbrainstudio.touchfit.ui.devices;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +39,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
     private List<String> device;
     private ArrayAdapter<String> dataAdapter;
     private TextInputEditText password;
+    private EditText nameDevice;
     private Spinner spinner;
     private String actualSSID;
     private String keyMgt;
@@ -51,12 +51,11 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
             NetworkInfo networkInfo = intent.getParcelableExtra(EXTRA_NETWORK_INFO);
             if (networkInfo.getDetailedState() == NetworkInfo.DetailedState.CONNECTED) {
                 if (mWifiManager.getConnectionInfo().getSSID().startsWith("\"LightDevice-"))
-                    new DeviceConnector(context, actualSSID, password.getText().toString(), keyMgt).start();
+                    new DeviceConnector(context, actualSSID, password.getText().toString(), keyMgt, nameDevice.getText().toString()).start();
             }
             if (networkInfo.getDetailedState() == NetworkInfo.DetailedState.OBTAINING_IPADDR) {
                 if (mWifiManager.getConnectionInfo().getSSID().equals(actualSSID)) {
                     unregisterReceiver(mWifiConnect);
-                    DevicesManager.instance.devices.add(new Devices(DevicesManager.instance.devices.size()));
 
                     finish();
                 }
@@ -112,6 +111,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
         progressBar = findViewById(R.id.connectingProgress);
         nextButton = findViewById(R.id.button_next);
         nextButton.setOnClickListener(this);
+        nameDevice = findViewById(R.id.addNameDevice);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION))
@@ -131,6 +131,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
 
     private void scan() {
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        assert mWifiManager != null;
         mWifiManager.setWifiEnabled(true);
 
         if (mWifiManager.getConnectionInfo().getNetworkId() == -1) {
@@ -138,7 +139,6 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
             Toast.makeText(this, R.string.connect_to_your_wifi, Toast.LENGTH_LONG).show();
             return;
         }
-        @SuppressLint("MissingPermission")
         WifiConfiguration actualWifi = mWifiManager.getConfiguredNetworks().stream().filter(w -> w.networkId == mWifiManager.getConnectionInfo().getNetworkId()).findFirst().orElse(null);
         //Log.i("TouchFit", "scan: " + mWifiManager.getConfiguredNetworks().stream().filter(w -> w.status == WifiConfiguration.Status.CURRENT).findFirst().get().allowedKeyManagement);
         TextView networkTextView = findViewById(R.id.networkTextView);
@@ -211,14 +211,15 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
 
     private static class DeviceConnector extends Thread{
 
-        public DeviceConnector(Context context, String wifi, String password, String keyMgmt) {
+        public DeviceConnector(Context context, String wifi, String password, String keyMgmt, String deviceName) {
             this.wifi = wifi;
             this.password = password;
             this.keyMgmt = keyMgmt;
             this.context = context;
+            this.deviceName = deviceName;
         }
         static final int PORT = 3243;
-        String wifi, password, keyMgmt;
+        String wifi, password, keyMgmt, deviceName;
         Context context;
 
         @Override
@@ -226,7 +227,9 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
             try {
                 sleep(2000);
                 DatagramSocket client_socket = new DatagramSocket(PORT);
-                byte[] data = (wifi + "\n" + password + "\n" + keyMgmt + "\n" + DevicesManager.instance.devices.size() + "\n").getBytes();
+                Devices device = new Devices(DevicesManager.instance.devices.size(), deviceName);
+                DevicesManager.instance.devices.add(device);
+                byte[] data = (wifi + "\n" + password + "\n" + keyMgmt + "\n" + device.getUuid().toString() + "\n").getBytes();
                 DatagramPacket send_packet = new DatagramPacket(data, data.length, InetAddress.getByName("10.0.0.5"), PORT);
                 client_socket.send(send_packet);
                 client_socket.close();
