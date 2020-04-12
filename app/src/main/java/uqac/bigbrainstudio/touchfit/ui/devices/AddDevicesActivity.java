@@ -227,8 +227,8 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
             try {
                 sleep(2000);
                 DatagramSocket client_socket = new DatagramSocket(PORT);
-                Devices device = new Devices(DevicesManager.instance.devices.size(), deviceName);
-                DevicesManager.instance.devices.add(device);
+                Devices device = new Devices(DevicesManager.getInstance().getDevices().size(), deviceName);
+                DevicesManager.getInstance().addDevices(device);
                 byte[] data = (wifi + "\n" + password + "\n" + keyMgmt + "\n" + device.getUuid().toString() + "\n").getBytes();
                 DatagramPacket send_packet = new DatagramPacket(data, data.length, InetAddress.getByName("10.0.0.5"), PORT);
                 client_socket.send(send_packet);

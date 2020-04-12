@@ -23,7 +23,7 @@ public class DevicesUDPReceive extends Thread{
             DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
             client_socket.receive(receivePacket);
             String modifiedSentence = new String(receivePacket.getData());
-            int id = DevicesManager.instance.getDevicesByIp(InetAddress.getByName(modifiedSentence)).getId();
+            int id = DevicesManager.getInstance().getDevicesByIp(InetAddress.getByName(modifiedSentence)).getId();
             activity.runOnUiThread(() -> Toast.makeText(activity, "ID: " + id, Toast.LENGTH_LONG).show());
             client_socket.close();
         } catch (IOException e) {

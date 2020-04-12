@@ -66,7 +66,7 @@ public class DevicesFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
 
             devicesList.clear();
-            devicesList.addAll(DevicesManager.instance.devices);
+            devicesList.addAll(DevicesManager.getInstance().getDevices());
 
             new DevicesDataRunnable(recyclerView, mSwipeRefreshLayout).execute(devicesList.toArray(new Devices[0]));
         });
@@ -84,7 +84,7 @@ public class DevicesFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(adapter);
 
-            devicesList.addAll(DevicesManager.instance.devices);
+            devicesList.addAll(DevicesManager.getInstance().getDevices());
 
             new DevicesDataRunnable(recyclerView).execute(devicesList.toArray(new Devices[0]));
 

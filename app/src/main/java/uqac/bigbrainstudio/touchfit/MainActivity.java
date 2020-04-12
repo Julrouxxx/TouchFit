@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import uqac.bigbrainstudio.touchfit.ui.LoginActivity;
 import uqac.bigbrainstudio.touchfit.ui.devices.Devices;
 import uqac.bigbrainstudio.touchfit.ui.devices.DevicesFragment;
+import uqac.bigbrainstudio.touchfit.ui.devices.DevicesManager;
 import uqac.bigbrainstudio.touchfit.ui.devices.DevicesUDPReceive;
 
 import java.io.IOException;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         } else {
+            DevicesManager.getInstance().setup();
             if(!mFirebaseUser.isAnonymous()) {
                 MenuItem logoutItem = navigationView.getMenu().findItem(R.id.logout);
                 logoutItem.setVisible(true);
