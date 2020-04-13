@@ -54,14 +54,17 @@ public class DevicesFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        new DevicesDataRunnable(recyclerView).execute(devicesList.toArray(new Devices[0]));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_devices_list, container, false);
         // Set the adapter
-
         SwipeRefreshLayout mSwipeRefreshLayout = view.findViewById(R.id.refreshDevices);
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
 
@@ -85,8 +88,7 @@ public class DevicesFragment extends Fragment {
             recyclerView.setAdapter(adapter);
 
             devicesList.addAll(DevicesManager.getInstance().getDevices());
-
-            new DevicesDataRunnable(recyclerView).execute(devicesList.toArray(new Devices[0]));
+            //new DevicesDataRunnable(recyclerView).execute(devicesList.toArray(new Devices[0]));
 
         }
         return view;
@@ -126,6 +128,10 @@ public class DevicesFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Devices item);
+
+        //void onContextInteraction(Devices mItem, View view);
+        //void onLongClickFragment(Devices item);
+
     }
 
 }

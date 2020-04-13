@@ -27,6 +27,7 @@ public class MyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<MyDevices
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_devices, parent, false);
+
         return new ViewHolder(view);
     }
 
@@ -36,6 +37,8 @@ public class MyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<MyDevices
         holder.mIdView.setText(String.valueOf(mValues.get(position).getId() + 1));
         holder.mContentView.setText(mValues.get(position).getName());
         holder.mContentIp.setText(mValues.get(position).getHostname());
+
+
         if (mValues.get(position).isConnected()) {
             holder.mContentStatus.setText(R.string.online_status);
             holder.mContentStatus.setTextColor(Color.GREEN);
@@ -43,9 +46,24 @@ public class MyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<MyDevices
             holder.mContentStatus.setText(R.string.offline_status);
             holder.mContentStatus.setTextColor(Color.RED);
         }
+      /*  holder.mView.setOnLongClickListener(v ->{
+            if(null != mListener) {
+                mListener.onLongClickFragment(holder.mItem);
+                return true;
+            }
+            return false;
+        });*/
+      holder.mView.setOnCreateContextMenuListener((contextMenu, view, contextMenuInfo) -> {
+          contextMenu.setHeaderTitle(holder.mItem.getName());
+          if(holder.mItem.isConnected())
+              contextMenu.add(0, view.getId(), position, R.string.delete_device);
+          contextMenu.add(0, view.getId(), position, R.string.rename_device);
+      });
+
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
                 mListener.onListFragmentInteraction(holder.mItem);
+
             }
         });
     }

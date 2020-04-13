@@ -68,7 +68,7 @@ public class DevicesDataRunnable extends AsyncTask<Devices, Void, Void> {
 
 
             pingSocket = new ServerSocket(3255);
-            pingSocket.setSoTimeout(200);
+            pingSocket.setSoTimeout(300);
         } catch (IOException e) {
             e.printStackTrace();
         }

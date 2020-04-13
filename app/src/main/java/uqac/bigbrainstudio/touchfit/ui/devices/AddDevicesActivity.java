@@ -112,6 +112,8 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
         nextButton = findViewById(R.id.button_next);
         nextButton.setOnClickListener(this);
         nameDevice = findViewById(R.id.addNameDevice);
+        registerReceiver(mWifiScanReceiver,
+                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION))
@@ -121,8 +123,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
                     1230);
             return;
         }
-        registerReceiver(mWifiScanReceiver,
-                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+
         scan();
 
     }

@@ -8,6 +8,8 @@ import com.google.firebase.database.*;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DevicesManager  {
     private final static DevicesManager instance = new DevicesManager();
@@ -37,6 +39,8 @@ public class DevicesManager  {
                 devices.clear();
                 for(DataSnapshot devicesSnap : dataSnapshot.getChildren()){
                     Devices device = devicesSnap.getValue(Devices.class);
+                    assert device != null;
+                    device.setKey(devicesSnap.getKey());
                     devices.add(device);
                 }
             }
@@ -46,6 +50,7 @@ public class DevicesManager  {
                 Log.e("TouchFit", "Error on reading online error: " + databaseError.getCode());
             }
         });
+
     }
     public Devices getDevicesByIp(InetAddress ip){
         return devices.stream().anyMatch(d -> d.getIp().equals(ip)) ? devices.stream().filter(d -> d.getIp().equals(ip)).findFirst().get() : null;
@@ -53,11 +58,17 @@ public class DevicesManager  {
     public ArrayList<Devices> getDevices() {
         return devices;
     }
-
+    public Devices getDeviceById(int id){
+        return devices.stream().anyMatch(l -> l.getId() == id) ? devices.stream().filter(l -> l.getId() == id).findFirst().get() : null;
+    }
     public void addDevices(Devices device){
         mData.child("devices").child(mUser.getUid()).push().setValue(device);
     }
-
+    public void updateDevice(Devices device){
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/devices/" + mUser.getUid() + "/" + device.getKey() + "/name/", device.getName());
+        mData.updateChildren(childUpdates);
+    }
     public static DevicesManager getInstance() {
         return instance;
     }

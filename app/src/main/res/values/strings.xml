@@ -37,5 +37,8 @@
     <string name="sign_in_failed_connection">Google sign in failed, please check your connection</string>
     <string name="auth_failed">Authentication Failed.</string>
     <string name="choose_a_device_name">Choose a Device Name</string>
+    <string name="delete_device">Delete</string>
+    <string name="rename_device">Rename</string>
+    <string name="rename_device_to">Rename device</string>
 
 </resources>

@@ -5,8 +5,10 @@ import android.graphics.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -21,13 +23,13 @@ import uqac.bigbrainstudio.touchfit.ui.LoginActivity;
 import uqac.bigbrainstudio.touchfit.ui.devices.Devices;
 import uqac.bigbrainstudio.touchfit.ui.devices.DevicesFragment;
 import uqac.bigbrainstudio.touchfit.ui.devices.DevicesManager;
-import uqac.bigbrainstudio.touchfit.ui.devices.DevicesUDPReceive;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements DevicesFragment.OnListFragmentInteractionListener {
 
@@ -101,11 +103,25 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
     @Override
     public void onListFragmentInteraction(Devices item) {
         item.turnOn();
-        new DevicesUDPReceive(this).start();
+
 
     }
 
-
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        //if(item.getMenuInfo())
+        Devices devices = DevicesManager.getInstance().getDeviceById(item.getOrder());
+        if(item.getTitle().equals(getString(R.string.rename_device))){
+            EditText text = new EditText(this);
+            text.setText(devices.getName());
+            new AlertDialog.Builder(this).setTitle(R.string.rename_device_to).setView(text).setPositiveButton(R.string.rename_device, (dialog, which) -> {
+                devices.setName(text.getText().toString());
+                DevicesManager.getInstance().updateDevice(devices);
+                Objects.requireNonNull(DevicesFragment.recyclerView.getAdapter()).notifyItemChanged(devices.getId());
+            }).show();
+        }
+        return super.onContextItemSelected(item);
+    }
 
     private static class GetBitmapFromURLAsync extends AsyncTask<String, Void, Bitmap> {
         private WeakReference<ImageView> imageView;

@@ -1,5 +1,7 @@
 package uqac.bigbrainstudio.touchfit.ui.devices;
 
+import com.google.firebase.database.Exclude;
+
 import java.net.InetAddress;
 import java.util.UUID;
 
@@ -11,6 +13,7 @@ public class Devices {
     private InetAddress ip;
     private String hostname;
     private boolean connected;
+    private String key;
 
     public Devices(){
 
@@ -45,7 +48,7 @@ public class Devices {
     public int getId() {
         return id;
     }
-
+    @Exclude
     public boolean isConnected() {
         return connected;
     }
@@ -66,7 +69,17 @@ public class Devices {
     public void turnOff(){
 
     }
+    @Exclude
+    public String getKey() {
+        return key;
+    }
 
+    public void setName(String text) {
+        this.name = text;
+    }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
 }
 
