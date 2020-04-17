@@ -8,6 +8,7 @@ import java.util.UUID;
 public class Devices {
 
     private int id;
+    private int position;
     private String uuid;
     private String name;
     private InetAddress ip;
@@ -15,15 +16,24 @@ public class Devices {
     private boolean connected;
     private String key;
 
-    public Devices(){
+    public Devices() {
 
     }
 
-    public Devices(int id, String name){
+    public Devices(int id, String name) {
         this.id = id;
         this.uuid = UUID.randomUUID().toString();
         this.name = name;
 
+    }
+
+    @Exclude
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public String getName() {
@@ -37,7 +47,6 @@ public class Devices {
     public UUID getUuid() {
         return UUID.fromString(uuid);
     }
-
     public InetAddress getIp() {
         return ip;
     }
@@ -63,7 +72,7 @@ public class Devices {
 
 
     public void turnOn(){
-        new DevicesUDPSend(this).start();
+        new DevicesUDPSend(this, "1").start();
     }
 
     public void turnOff(){
@@ -80,6 +89,10 @@ public class Devices {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public void reset() {
+        new DevicesUDPSend(this, "del").start();
     }
 }
 

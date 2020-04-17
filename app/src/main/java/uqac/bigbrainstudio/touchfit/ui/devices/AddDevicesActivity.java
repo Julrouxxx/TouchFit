@@ -44,19 +44,19 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
     private String actualSSID;
     private String keyMgt;
     private Button nextButton;
+    private Thread dfs;
     private ProgressBar progressBar;
     private final BroadcastReceiver mWifiConnect = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             NetworkInfo networkInfo = intent.getParcelableExtra(EXTRA_NETWORK_INFO);
             if (networkInfo.getDetailedState() == NetworkInfo.DetailedState.CONNECTED) {
-                if (mWifiManager.getConnectionInfo().getSSID().startsWith("\"LightDevice-"))
-                    new DeviceConnector(context, actualSSID, password.getText().toString(), keyMgt, nameDevice.getText().toString()).start();
-            }
-            if (networkInfo.getDetailedState() == NetworkInfo.DetailedState.OBTAINING_IPADDR) {
-                if (mWifiManager.getConnectionInfo().getSSID().equals(actualSSID)) {
+                if (mWifiManager.getConnectionInfo().getSSID().startsWith("\"LightDevice-")) {
+                    if (dfs.getState() == Thread.State.NEW)
+                        dfs.start();
+                }
+                if (mWifiManager.getConnectionInfo().getSSID().equals(actualSSID) && dfs.getState() == Thread.State.TERMINATED) {
                     unregisterReceiver(mWifiConnect);
-
                     finish();
                 }
             }
@@ -206,6 +206,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
         wifiConfiguration.SSID = "\"" + spinner.getSelectedItem().toString() + "\"";
         wifiConfiguration.preSharedKey = "\"" + LIGHT_PASS + "\"";
         int id = mWifiManager.addNetwork(wifiConfiguration);
+        dfs = new DeviceConnector(v.getContext(), actualSSID, password.getText().toString(), keyMgt, nameDevice.getText().toString());
         registerReceiver(mWifiConnect, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
         mWifiManager.enableNetwork(id, true);
     }

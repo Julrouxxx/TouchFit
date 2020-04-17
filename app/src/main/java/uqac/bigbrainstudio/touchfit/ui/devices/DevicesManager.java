@@ -62,13 +62,26 @@ public class DevicesManager  {
         return devices.stream().anyMatch(l -> l.getId() == id) ? devices.stream().filter(l -> l.getId() == id).findFirst().get() : null;
     }
     public void addDevices(Devices device){
-        mData.child("devices").child(mUser.getUid()).push().setValue(device);
+        DatabaseReference key = mData.child("devices").child(mUser.getUid()).push();
+        Map<String, Object> childAdd = new HashMap<>();
+        childAdd.put("uuid", device.getUuid().toString());
+        childAdd.put("id", device.getId());
+        childAdd.put("name", device.getName());
+        key.setValue(childAdd);
     }
-    public void updateDevice(Devices device){
+
+    public void updateDevice(Devices device) {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/devices/" + mUser.getUid() + "/" + device.getKey() + "/name/", device.getName());
         mData.updateChildren(childUpdates);
     }
+
+    public void deleteDevice(Devices device) {
+        device.reset();
+        mData.child("devices").child(mUser.getUid()).child(device.getKey()).removeValue();
+        devices.remove(device);
+    }
+
     public static DevicesManager getInstance() {
         return instance;
     }

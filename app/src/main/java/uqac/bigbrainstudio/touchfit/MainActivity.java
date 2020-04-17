@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.graphics.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import uqac.bigbrainstudio.touchfit.ui.LoginActivity;
 import uqac.bigbrainstudio.touchfit.ui.devices.Devices;
+import uqac.bigbrainstudio.touchfit.ui.devices.DevicesDataRunnable;
 import uqac.bigbrainstudio.touchfit.ui.devices.DevicesFragment;
 import uqac.bigbrainstudio.touchfit.ui.devices.DevicesManager;
 
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
             finish();
         } else {
             DevicesManager.getInstance().setup();
+            Log.d("TouchFit user uid", mFirebaseUser.getUid());
             if(!mFirebaseUser.isAnonymous()) {
                 MenuItem logoutItem = navigationView.getMenu().findItem(R.id.logout);
                 logoutItem.setVisible(true);
@@ -111,14 +115,25 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
     public boolean onContextItemSelected(MenuItem item) {
         //if(item.getMenuInfo())
         Devices devices = DevicesManager.getInstance().getDeviceById(item.getOrder());
-        if(item.getTitle().equals(getString(R.string.rename_device))){
+        if (item.getTitle().equals(getString(R.string.rename_device))) {
             EditText text = new EditText(this);
             text.setText(devices.getName());
             new AlertDialog.Builder(this).setTitle(R.string.rename_device_to).setView(text).setPositiveButton(R.string.rename_device, (dialog, which) -> {
                 devices.setName(text.getText().toString());
                 DevicesManager.getInstance().updateDevice(devices);
-                Objects.requireNonNull(DevicesFragment.recyclerView.getAdapter()).notifyItemChanged(devices.getId());
+                new DevicesDataRunnable(DevicesFragment.recyclerView).execute(DevicesManager.getInstance().getDevices().toArray(new Devices[0]));
+                //Objects.requireNonNull(DevicesFragment.recyclerView.getAdapter()).notifyItemChanged(devices.getId());
             }).show();
+            return true;
+        }
+        if (item.getTitle().equals(getString(R.string.delete_device))) {
+            Toast.makeText(this, R.string.delete_advice, Toast.LENGTH_SHORT).show();
+            DevicesManager.getInstance().deleteDevice(devices);
+
+            Objects.requireNonNull(DevicesFragment.recyclerView.getAdapter()).notifyItemRemoved(devices.getPosition());
+            //Objects.requireNonNull(DevicesFragment.recyclerView.getAdapter()).notifyItemRangeChanged(devices.getPosition(), DevicesManager.getInstance().getDevices().size());
+
+            return true;
         }
         return super.onContextItemSelected(item);
     }

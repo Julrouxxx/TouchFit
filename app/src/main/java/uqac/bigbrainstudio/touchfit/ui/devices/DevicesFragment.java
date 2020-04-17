@@ -14,9 +14,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import uqac.bigbrainstudio.touchfit.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -28,7 +25,7 @@ public class DevicesFragment extends Fragment {
     // TODO: Customize parameter argument names
     // TODO: Customize parameters
     private OnListFragmentInteractionListener mListener;
-    public static List<Devices> devicesList;
+    //public static List<Devices> devicesList;
 
     public static RecyclerView recyclerView;
 
@@ -57,7 +54,7 @@ public class DevicesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        new DevicesDataRunnable(recyclerView).execute(devicesList.toArray(new Devices[0]));
+        new DevicesDataRunnable(recyclerView).execute(DevicesManager.getInstance().getDevices().toArray(new Devices[0]));
     }
 
     @Override
@@ -68,10 +65,10 @@ public class DevicesFragment extends Fragment {
         SwipeRefreshLayout mSwipeRefreshLayout = view.findViewById(R.id.refreshDevices);
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
 
-            devicesList.clear();
-            devicesList.addAll(DevicesManager.getInstance().getDevices());
+            // devicesList.clear();
+            //devicesList.addAll(DevicesManager.getInstance().getDevices());
 
-            new DevicesDataRunnable(recyclerView, mSwipeRefreshLayout).execute(devicesList.toArray(new Devices[0]));
+            new DevicesDataRunnable(recyclerView, mSwipeRefreshLayout).execute(DevicesManager.getInstance().getDevices().toArray(new Devices[0]));
         });
 
 
@@ -82,12 +79,12 @@ public class DevicesFragment extends Fragment {
             Context context = recyclerView.getContext();
             DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
             recyclerView.addItemDecoration(dividerItemDecoration);
-            devicesList = new ArrayList<>();
-            MyDevicesRecyclerViewAdapter adapter = new MyDevicesRecyclerViewAdapter(devicesList, mListener);
+            //devicesList = new ArrayList<>();
+            MyDevicesRecyclerViewAdapter adapter = new MyDevicesRecyclerViewAdapter(DevicesManager.getInstance().getDevices(), mListener);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(adapter);
 
-            devicesList.addAll(DevicesManager.getInstance().getDevices());
+            //devicesList.addAll(DevicesManager.getInstance().getDevices());
             //new DevicesDataRunnable(recyclerView).execute(devicesList.toArray(new Devices[0]));
 
         }

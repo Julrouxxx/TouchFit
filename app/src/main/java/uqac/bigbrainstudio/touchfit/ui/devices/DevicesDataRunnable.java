@@ -103,7 +103,7 @@ public class DevicesDataRunnable extends AsyncTask<Devices, Void, Void> {
             } catch (IOException e) {
                 Log.i("TouchFit", "No response from a compatible devices, ignoring...");
             }finally {
-                recyclerView.get().post(() -> Objects.requireNonNull(recyclerView.get().getAdapter()).notifyItemChanged(device.getId()));
+                recyclerView.get().post(() -> Objects.requireNonNull(recyclerView.get().getAdapter()).notifyItemChanged(device.getPosition()));
             }
 
         }

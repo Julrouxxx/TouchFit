@@ -40,5 +40,6 @@
     <string name="delete_device">Delete</string>
     <string name="rename_device">Rename</string>
     <string name="rename_device_to">Rename device</string>
+    <string name="delete_advice">Deleting... The Light will be reseted</string>
 
 </resources>

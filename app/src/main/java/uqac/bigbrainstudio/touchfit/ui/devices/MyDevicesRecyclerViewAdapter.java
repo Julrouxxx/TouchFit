@@ -34,6 +34,7 @@ public class MyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<MyDevices
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
+        holder.mItem.setPosition(position);
         holder.mIdView.setText(String.valueOf(mValues.get(position).getId() + 1));
         holder.mContentView.setText(mValues.get(position).getName());
         holder.mContentIp.setText(mValues.get(position).getHostname());
@@ -55,9 +56,9 @@ public class MyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<MyDevices
         });*/
       holder.mView.setOnCreateContextMenuListener((contextMenu, view, contextMenuInfo) -> {
           contextMenu.setHeaderTitle(holder.mItem.getName());
-          if(holder.mItem.isConnected())
-              contextMenu.add(0, view.getId(), position, R.string.delete_device);
-          contextMenu.add(0, view.getId(), position, R.string.rename_device);
+          if (holder.mItem.isConnected())
+              contextMenu.add(0, view.getId(), holder.mItem.getId(), R.string.delete_device);
+          contextMenu.add(0, view.getId(), holder.mItem.getId(), R.string.rename_device);
       });
 
         holder.mView.setOnClickListener(v -> {
