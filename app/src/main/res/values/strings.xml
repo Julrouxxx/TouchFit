@@ -40,6 +40,12 @@
     <string name="delete_device">Delete</string>
     <string name="rename_device">Rename</string>
     <string name="rename_device_to">Rename device</string>
-    <string name="delete_advice">Deleting... The Light will be reseted</string>
+    <string name="delete_advice">Deleting… The Light will be reseted</string>
+    <string name="training">Training</string>
+    <string name="light_max_time">Light max time:</string>
+    <string name="challenges">Challenges</string>
+    <string name="seconds">sec.</string>
+    <string name="light_each">Number of light to activate: </string>
+    <string name="let_s_go">Let\'s Go</string>
 
 </resources>

@@ -6,14 +6,19 @@ import androidx.lifecycle.ViewModel;
 
 public class TrainingViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private MutableLiveData<Integer> mSeconds;
+    private MutableLiveData<Integer> mLights;
 
     public TrainingViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mSeconds = new MutableLiveData<>();
+        mLights = new MutableLiveData<>();
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<Integer> getLights() {
+        return mLights;
+    }
+
+    public LiveData<Integer> getSeconds() {
+        return mSeconds;
     }
 }
