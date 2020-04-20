@@ -53,7 +53,13 @@ public class DevicesManager  {
 
     }
     public Devices getDevicesByIp(InetAddress ip){
-        return devices.stream().anyMatch(d -> d.getIp().equals(ip)) ? devices.stream().filter(d -> d.getIp().equals(ip)).findFirst().get() : null;
+        for(Devices device :devices){
+            if(device.getIp() == null)
+                continue;
+            if(device.getIp().equals(ip))
+                return device;
+        }
+        return null;
     }
     public ArrayList<Devices> getDevices() {
         return devices;

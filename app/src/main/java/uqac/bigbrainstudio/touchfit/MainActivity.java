@@ -22,10 +22,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import uqac.bigbrainstudio.touchfit.ui.LoginActivity;
-import uqac.bigbrainstudio.touchfit.ui.devices.Devices;
-import uqac.bigbrainstudio.touchfit.ui.devices.DevicesDataRunnable;
-import uqac.bigbrainstudio.touchfit.ui.devices.DevicesFragment;
-import uqac.bigbrainstudio.touchfit.ui.devices.DevicesManager;
+import uqac.bigbrainstudio.touchfit.ui.devices.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
                 R.id.nav_training, R.id.nav_devices, R.id.nav_settings)
                 .setDrawerLayout(drawer)
                 .build();
+
+        new Thread(new MultiplexDevices()).start();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
 
     @Override
     public void onListFragmentInteraction(Devices item) {
-        item.turnOn();
+        item.turnOn(3);
 
 
     }

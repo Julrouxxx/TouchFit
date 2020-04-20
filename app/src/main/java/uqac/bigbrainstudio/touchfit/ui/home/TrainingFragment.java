@@ -3,14 +3,19 @@ package uqac.bigbrainstudio.touchfit.ui.home;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import uqac.bigbrainstudio.touchfit.R;
+import uqac.bigbrainstudio.touchfit.ui.devices.DeviceListener;
+import uqac.bigbrainstudio.touchfit.ui.devices.Devices;
+import uqac.bigbrainstudio.touchfit.ui.devices.DevicesManager;
 
 public class TrainingFragment extends Fragment {
 
@@ -23,10 +28,23 @@ public class TrainingFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_training, container, false);
         EditText lightSeconds = root.findViewById(R.id.numberSecondsLight);
         EditText numberLight = root.findViewById(R.id.numberEachLight);
+        Button button = root.findViewById(R.id.start_button);
         lightSeconds.setFilters(new InputFilter[]{new InputFilterMinMax(1, 30)});
         numberLight.setFilters(new InputFilter[]{new InputFilterMinMax(1, 20)});
         trainingViewModel.getSeconds().observe(this, l -> lightSeconds.setText(String.valueOf(l)));
         trainingViewModel.getLights().observe(this, l -> numberLight.setText(String.valueOf(l)));
+        button.setOnClickListener(l -> DevicesManager.getInstance().getDevices().forEach(d -> d.startListening(new DeviceListener() {
+            @Override
+            public void onButtonPush(Devices devices) {
+                Log.i("buttonListener", "onButtonPush: " + devices.getIp());
+            }
+
+            @Override
+            public void onTimeOut(Devices devices) {
+                Log.i("buttonListener", "onTimeOut: " + devices.getIp());
+
+            }
+        })));
         return root;
     }
 

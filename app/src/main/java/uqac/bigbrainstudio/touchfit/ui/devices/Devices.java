@@ -3,6 +3,7 @@ package uqac.bigbrainstudio.touchfit.ui.devices;
 import com.google.firebase.database.Exclude;
 
 import java.net.InetAddress;
+import java.net.Socket;
 import java.util.UUID;
 
 public class Devices {
@@ -15,6 +16,8 @@ public class Devices {
     private String hostname;
     private boolean connected;
     private String key;
+    private Socket socket;
+    private Thread thread;
 
     public Devices() {
 
@@ -71,12 +74,20 @@ public class Devices {
     }
 
 
-    public void turnOn(){
-        new DevicesUDPSend(this, "1").start();
+    public void turnOn(int seconds){
+        if(socket != null)
+        new DeviceConnector(socket).execute(String.valueOf(seconds));
     }
 
     public void turnOff(){
 
+    }
+    public void startListening(DeviceListener deviceListener){
+        this.thread = new Thread(new DeviceButtonThread(socket, deviceListener, this));
+        thread.start();
+    }
+    public void stopListening(){
+        thread.interrupt();
     }
     @Exclude
     public String getKey() {
@@ -92,7 +103,17 @@ public class Devices {
     }
 
     public void reset() {
-        new DevicesUDPSend(this, "del").start();
+        stopListening();
+        if(socket != null)
+            new DeviceConnector(socket).execute("del");
+    }
+    @Exclude
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
     }
 }
 
