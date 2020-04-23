@@ -1,4 +1,4 @@
-package uqac.bigbrainstudio.touchfit.ui.devices;
+package uqac.bigbrainstudio.touchfit.controllers;
 
 /**
  * TouchFit

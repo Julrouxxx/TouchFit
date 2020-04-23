@@ -1,4 +1,4 @@
-package uqac.bigbrainstudio.touchfit.ui.devices;
+package uqac.bigbrainstudio.touchfit.controllers;
 
 import android.os.AsyncTask;
 
@@ -39,6 +39,7 @@ public class DeviceConnector extends AsyncTask<String, Void, Void> {
                 writer.write(string);
             }
         writer.flush();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

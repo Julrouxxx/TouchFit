@@ -2,6 +2,7 @@
 <project version="4">
   <component name="DiscordProjectSettings">
     <option name="show" value="true" />
+    <option name="description" value="Android App to interact with Lights and have fun" />
   </component>
   <component name="ProjectNotificationSettings">
     <option name="askShowProject" value="false" />

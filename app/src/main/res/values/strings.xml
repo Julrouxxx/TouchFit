@@ -48,4 +48,11 @@
     <string name="light_each">Number of light to activate: </string>
     <string name="let_s_go">Let\'s Go</string>
 
+    <string name="title_activity_game">Game</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="warning_psm">Warning! This application is not optimized in PowerSave Mode</string>
+    <string name="no_device">No lights connected found! Please add lights before starting game</string>
+    <string name="please_provide">Please, enter a number</string>
+
 </resources>

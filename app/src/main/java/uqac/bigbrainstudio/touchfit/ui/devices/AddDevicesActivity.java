@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import uqac.bigbrainstudio.touchfit.R;
+import uqac.bigbrainstudio.touchfit.controllers.Devices;
+import uqac.bigbrainstudio.touchfit.controllers.DevicesDataRunnable;
+import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -28,6 +32,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static android.net.wifi.WifiManager.EXTRA_NETWORK_INFO;
@@ -57,11 +62,22 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
                 }
                 if (mWifiManager.getConnectionInfo().getSSID().equals(actualSSID) && dfs.getState() == Thread.State.TERMINATED) {
                     unregisterReceiver(mWifiConnect);
+                    new DevicesDataRunnable(DevicesFragment.recyclerView).execute(DevicesManager.getInstance().getDevices().toArray(new Devices[0]));
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                     finish();
                 }
             }
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        if(dfs != null)
+            moveTaskToBack(true);
+        else
+            super.onBackPressed();
+    }
     private final BroadcastReceiver mWifiScanReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context c, Intent intent) {
@@ -199,6 +215,8 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         nextButton.setEnabled(false);
         ready = false;
         progressBar.setVisibility(View.VISIBLE);
@@ -206,7 +224,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
         wifiConfiguration.SSID = "\"" + spinner.getSelectedItem().toString() + "\"";
         wifiConfiguration.preSharedKey = "\"" + LIGHT_PASS + "\"";
         int id = mWifiManager.addNetwork(wifiConfiguration);
-        dfs = new DeviceConnector(v.getContext(), actualSSID, password.getText().toString(), keyMgt, nameDevice.getText().toString());
+        dfs = new DeviceConnector(v.getContext(), actualSSID, Objects.requireNonNull(password.getText()).toString(), keyMgt, nameDevice.getText().toString());
         registerReceiver(mWifiConnect, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
         mWifiManager.enableNetwork(id, true);
     }
@@ -236,6 +254,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
                 client_socket.send(send_packet);
                 client_socket.close();
                 WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                assert mWifiManager != null;
                 mWifiManager.removeNetwork(mWifiManager.getConnectionInfo().getNetworkId());
                 mWifiManager.reconnect();
             } catch (IOException | InterruptedException e) {

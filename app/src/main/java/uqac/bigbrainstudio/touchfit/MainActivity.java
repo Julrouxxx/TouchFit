@@ -1,9 +1,11 @@
 package uqac.bigbrainstudio.touchfit;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -21,20 +23,24 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import uqac.bigbrainstudio.touchfit.controllers.Devices;
+import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
+import uqac.bigbrainstudio.touchfit.controllers.MultiplexDevices;
 import uqac.bigbrainstudio.touchfit.ui.LoginActivity;
-import uqac.bigbrainstudio.touchfit.ui.devices.*;
+import uqac.bigbrainstudio.touchfit.ui.devices.DevicesFragment;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements DevicesFragment.OnListFragmentInteractionListener {
 
     private AppBarConfiguration mAppBarConfiguration;
-
+    private ServerSocket serverSocket;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +57,17 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
                 R.id.nav_training, R.id.nav_devices, R.id.nav_settings)
                 .setDrawerLayout(drawer)
                 .build();
-
-        new Thread(new MultiplexDevices()).start();
-
+        PowerManager powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        assert powerManager != null;
+        if(powerManager.isPowerSaveMode()){
+            Toast.makeText(this, R.string.warning_psm, Toast.LENGTH_LONG).show();
+        }
+        try {
+            serverSocket = new ServerSocket(3245);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        new Thread(new MultiplexDevices(serverSocket)).start();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -96,6 +110,23 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            DevicesManager.getInstance().getDevices().forEach(d -> {
+                try {
+                    if(d.getSocket() != null )
+                    d.getSocket().close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -121,8 +152,8 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
             new AlertDialog.Builder(this).setTitle(R.string.rename_device_to).setView(text).setPositiveButton(R.string.rename_device, (dialog, which) -> {
                 devices.setName(text.getText().toString());
                 DevicesManager.getInstance().updateDevice(devices);
-                new DevicesDataRunnable(DevicesFragment.recyclerView).execute(DevicesManager.getInstance().getDevices().toArray(new Devices[0]));
-                //Objects.requireNonNull(DevicesFragment.recyclerView.getAdapter()).notifyItemChanged(devices.getId());
+                //new DevicesDataRunnable(DevicesFragment.recyclerView).execute(devices);
+                Objects.requireNonNull(DevicesFragment.recyclerView.getAdapter()).notifyItemChanged(devices.getPosition());
             }).show();
             return true;
         }

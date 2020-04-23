@@ -1,4 +1,4 @@
-package uqac.bigbrainstudio.touchfit.ui.devices;
+package uqac.bigbrainstudio.touchfit.controllers;
 
 import android.util.Log;
 
@@ -11,6 +11,11 @@ import java.net.Socket;
  * Created by Julrouxxx.
  */
 public class MultiplexDevices implements Runnable {
+
+    private  ServerSocket serverSocket;
+    public MultiplexDevices(ServerSocket serverSocket){
+        this.serverSocket = serverSocket;
+    }
     /**
      * When an object implementing interface <code>Runnable</code> is used
      * to create a thread, starting the thread causes the object's
@@ -26,7 +31,6 @@ public class MultiplexDevices implements Runnable {
     public void run() {
 
         try {
-            ServerSocket serverSocket = new ServerSocket(3245);
             Socket client;
             while((client = serverSocket.accept()) != null){
                 Devices device = DevicesManager.getInstance().getDevicesByIp(client.getInetAddress());
@@ -36,8 +40,9 @@ public class MultiplexDevices implements Runnable {
                 device.setSocket(client);
                 Log.i("TouchFit", "run: " + device.getIp() + " connected!");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            serverSocket.close();
+        } catch (IOException ignored) {
+
         }
 
     }

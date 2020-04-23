@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import uqac.bigbrainstudio.touchfit.R;
+import uqac.bigbrainstudio.touchfit.controllers.Devices;
+import uqac.bigbrainstudio.touchfit.controllers.DevicesDataRunnable;
+import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
 
 /**
  * A fragment representing a list of Items.
@@ -54,7 +58,7 @@ public class DevicesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        new DevicesDataRunnable(recyclerView).execute(DevicesManager.getInstance().getDevices().toArray(new Devices[0]));
+        //new DevicesDataRunnable(recyclerView).execute(DevicesManager.getInstance().getDevices().toArray(new Devices[0]));
     }
 
     @Override
@@ -80,6 +84,7 @@ public class DevicesFragment extends Fragment {
             DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
             recyclerView.addItemDecoration(dividerItemDecoration);
             //devicesList = new ArrayList<>();
+
             MyDevicesRecyclerViewAdapter adapter = new MyDevicesRecyclerViewAdapter(DevicesManager.getInstance().getDevices(), mListener);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(adapter);
@@ -93,7 +98,7 @@ public class DevicesFragment extends Fragment {
 
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
