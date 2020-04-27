@@ -8,10 +8,11 @@ import com.google.firebase.database.*;
 
 import java.net.InetAddress;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DevicesManager  {
     private final static DevicesManager instance = new DevicesManager();
-    public ArrayList<Devices> devices = new ArrayList<>();
+    public ArrayList<Device> devices = new ArrayList<>();
     private FirebaseUser mUser;
     private DatabaseReference mData;
     private boolean first = false;
@@ -39,7 +40,7 @@ public class DevicesManager  {
 
                 devices.clear();
                 for(DataSnapshot devicesSnap : dataSnapshot.getChildren()){
-                    Devices device = devicesSnap.getValue(Devices.class);
+                    Device device = devicesSnap.getValue(Device.class);
                     assert device != null;
                     device.setKey(devicesSnap.getKey());
                     devices.add(device);
@@ -47,7 +48,7 @@ public class DevicesManager  {
                 }
                 Collections.sort(devices);
                 if(first) {
-                    new DevicesDataRunnable().execute(getDevices().toArray(new Devices[0]));
+                    new DevicesDataRunnable().execute(getDevices().toArray(new Device[0]));
                     first = false;
                 }
             }
@@ -59,8 +60,8 @@ public class DevicesManager  {
         });
 
     }
-    public Devices getDevicesByIp(InetAddress ip){
-        for(Devices device :devices){
+    public Device getDevicesByIp(InetAddress ip){
+        for(Device device :devices){
             if(device.getIp() == null)
                 continue;
             if(device.getIp().equals(ip))
@@ -68,13 +69,18 @@ public class DevicesManager  {
         }
         return null;
     }
-    public ArrayList<Devices> getDevices() {
+    public ArrayList<Device> getDevices() {
         return devices;
     }
-    public Devices getDeviceById(int id){
+
+    public ArrayList<Device> getDevicesConnected(){
+        return devices.stream().filter(Device::isConnected).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public Device getDeviceById(int id){
         return devices.stream().anyMatch(l -> l.getId() == id) ? devices.stream().filter(l -> l.getId() == id).findFirst().get() : null;
     }
-    public void addDevices(Devices device){
+    public void addDevices(Device device){
         DatabaseReference key = mData.child(mUser.getUid()).child("devices").push();
         Map<String, Object> childAdd = new HashMap<>();
         childAdd.put("uuid", device.getUuid().toString());
@@ -83,13 +89,13 @@ public class DevicesManager  {
         key.setValue(childAdd);
     }
 
-    public void updateDevice(Devices device) {
+    public void updateDevice(Device device) {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put(mUser.getUid() + "/devices/" + device.getKey() + "/name/", device.getName());
         mData.updateChildren(childUpdates);
     }
 
-    public void deleteDevice(Devices device) {
+    public void deleteDevice(Device device) {
         device.reset();
         mData.child(mUser.getUid()).child("devices").child(device.getKey()).removeValue();
         devices.remove(device);

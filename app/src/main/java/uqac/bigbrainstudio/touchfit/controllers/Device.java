@@ -2,11 +2,12 @@ package uqac.bigbrainstudio.touchfit.controllers;
 
 import com.google.firebase.database.Exclude;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.UUID;
 
-public class Devices implements Comparable<Devices> {
+public class Device implements Comparable<Device> {
 
     private int id;
     private int position;
@@ -15,15 +16,16 @@ public class Devices implements Comparable<Devices> {
     private InetAddress ip;
     private String hostname;
     private boolean connected;
+    private boolean on;
     private String key;
     private Socket socket;
     private Thread thread;
 
-    public Devices() {
+    public Device() {
 
     }
 
-    public Devices(int id, String name) {
+    public Device(int id, String name) {
         this.id = id;
         this.uuid = UUID.randomUUID().toString();
         this.name = name;
@@ -42,7 +44,6 @@ public class Devices implements Comparable<Devices> {
     public String getName() {
         return name;
     }
-
     public String getHostname() {
         return hostname;
     }
@@ -73,22 +74,27 @@ public class Devices implements Comparable<Devices> {
         this.connected = connected;
     }
 
+    public boolean isOn() {
+        return on;
+    }
+
+    public void setOn(boolean b) {
+        this.on = b;
+    }
 
     public void turnOn(int seconds){
-        if(socket != null)
-        new DeviceConnector(socket).execute(String.valueOf(seconds));
+        if(socket != null && !socket.isClosed()) {
+            on = true;
+            new DeviceConnector(socket).execute(String.valueOf(seconds));
+        }
+
     }
 
-    public void turnOff(){
-
-    }
     public void startListening(DeviceListener deviceListener){
-        this.thread = new Thread(new DeviceButtonThread(socket, deviceListener, this));
-        thread.start();
-    }
-    public void stopListening(){
-        if(thread != null)
-        thread.interrupt();
+        if(socket !=  null) {
+            this.thread = new Thread(new DeviceButtonThread(socket, deviceListener, this));
+            thread.start();
+        }
     }
     @Exclude
     public String getKey() {
@@ -103,10 +109,14 @@ public class Devices implements Comparable<Devices> {
         this.key = key;
     }
 
-    public void reset() {
-        stopListening();
-        if(socket != null)
-            new DeviceConnector(socket).execute("del");
+    public void stopListening(){
+        if(thread != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
     @Exclude
     public Socket getSocket() {
@@ -115,6 +125,12 @@ public class Devices implements Comparable<Devices> {
 
     public void setSocket(Socket socket) {
         this.socket = socket;
+    }
+
+    public void reset() {
+        stopListening();
+        if(socket != null && !socket.isClosed())
+            new DeviceConnector(socket).execute("del");
     }
 
     /**
@@ -156,7 +172,7 @@ public class Devices implements Comparable<Devices> {
      *                              from being compared to this object.
      */
     @Override
-    public int compareTo(Devices o) {
+    public int compareTo(Device o) {
         return getId() < o.getId() ? -1 : 1;
     }
 }

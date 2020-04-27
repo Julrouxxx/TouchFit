@@ -5,6 +5,6 @@ package uqac.bigbrainstudio.touchfit.controllers;
  * Created by Julrouxxx.
  */
 public interface DeviceListener {
-    void onButtonPush(Devices devices);
-    void onTimeOut(Devices devices);
+    void onButtonPush(Device devices);
+    void onTimeOut(Device devices);
 }

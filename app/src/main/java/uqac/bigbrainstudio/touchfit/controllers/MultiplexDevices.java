@@ -33,7 +33,7 @@ public class MultiplexDevices implements Runnable {
         try {
             Socket client;
             while((client = serverSocket.accept()) != null){
-                Devices device = DevicesManager.getInstance().getDevicesByIp(client.getInetAddress());
+                Device device = DevicesManager.getInstance().getDevicesByIp(client.getInetAddress());
                 if(device == null)
                     continue;
 

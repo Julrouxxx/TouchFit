@@ -8,17 +8,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import uqac.bigbrainstudio.touchfit.R;
-import uqac.bigbrainstudio.touchfit.controllers.Devices;
+import uqac.bigbrainstudio.touchfit.controllers.Device;
 import uqac.bigbrainstudio.touchfit.ui.devices.DevicesFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
 public class MyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<MyDevicesRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Devices> mValues;
+    private final List<Device> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyDevicesRecyclerViewAdapter(List<Devices> items, OnListFragmentInteractionListener listener) {
+    public MyDevicesRecyclerViewAdapter(List<Device> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -42,12 +42,18 @@ public class MyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<MyDevices
 
 
         if (mValues.get(position).isConnected()) {
-            holder.mContentStatus.setText(R.string.online_status);
-            holder.mContentStatus.setTextColor(Color.GREEN);
+            if(mValues.get(position).getSocket() == null) {
+                holder.mContentStatus.setText(R.string.connected_not_ready);
+                holder.mContentStatus.setTextColor(Color.parseColor("#FF7F00"));
+            } else {
+                holder.mContentStatus.setText(R.string.online_status);
+                holder.mContentStatus.setTextColor(Color.GREEN);
+            }
         } else {
             holder.mContentStatus.setText(R.string.offline_status);
             holder.mContentStatus.setTextColor(Color.RED);
         }
+
       /*  holder.mView.setOnLongClickListener(v ->{
             if(null != mListener) {
                 mListener.onLongClickFragment(holder.mItem);
@@ -82,7 +88,7 @@ public class MyDevicesRecyclerViewAdapter extends RecyclerView.Adapter<MyDevices
         public final TextView mContentView;
         public final TextView mContentIp;
         public final TextView mContentStatus;
-        public Devices mItem;
+        public Device mItem;
 
         public ViewHolder(View view) {
             super(view);

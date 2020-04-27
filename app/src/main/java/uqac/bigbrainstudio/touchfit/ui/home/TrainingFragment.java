@@ -1,25 +1,20 @@
 package uqac.bigbrainstudio.touchfit.ui.home;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.transition.TransitionManager;
 import uqac.bigbrainstudio.touchfit.R;
-import uqac.bigbrainstudio.touchfit.controllers.Devices;
+import uqac.bigbrainstudio.touchfit.controllers.Device;
 import uqac.bigbrainstudio.touchfit.controllers.DevicesDataRunnable;
 import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
 import uqac.bigbrainstudio.touchfit.ui.game.GameActivity;
@@ -29,7 +24,6 @@ import java.util.concurrent.ExecutionException;
 
 public class TrainingFragment extends Fragment {
 
-    private TrainingViewModel trainingViewModel;
     ProgressBar progressBar;
     LinearLayout linearLayout;
     CardView cardTraining;
@@ -40,8 +34,6 @@ public class TrainingFragment extends Fragment {
     EditText numberLight;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        trainingViewModel =
-                ViewModelProviders.of(this).get(TrainingViewModel.class);
         View root = inflater.inflate(R.layout.fragment_training, container, false);
         lightSeconds = root.findViewById(R.id.numberSecondsLight);
         numberLight = root.findViewById(R.id.numberEachLight);
@@ -50,10 +42,8 @@ public class TrainingFragment extends Fragment {
         cardTraining = root.findViewById(R.id.cardTraining);
         cardChallenge = root.findViewById(R.id.cardChallenge);
         Button button = root.findViewById(R.id.start_button);
-        lightSeconds.setFilters(new InputFilter[]{new InputFilterMinMax(1, 30)});
-        numberLight.setFilters(new InputFilter[]{new InputFilterMinMax(1, 20)});
-        trainingViewModel.getSeconds().observe(getViewLifecycleOwner(), l -> lightSeconds.setText(String.valueOf(l)));
-        trainingViewModel.getLights().observe(getViewLifecycleOwner(), l -> numberLight.setText(String.valueOf(l)));
+        lightSeconds.setFilters(new InputFilter[]{new InputFilterMinMax(1, 59)});
+        numberLight.setFilters(new InputFilter[]{new InputFilterMinMax(1, 99)});
         button.setOnClickListener(this::onClick);
         return root;
     }
@@ -70,7 +60,9 @@ public class TrainingFragment extends Fragment {
         }
         if(error)
             return;
-        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        InputMethodManager imm = requireActivity().getSystemService(InputMethodManager.class);
         assert imm != null;
         imm.hideSoftInputFromWindow(Objects.requireNonNull(requireActivity().getCurrentFocus()).getWindowToken(), 0);
         TransitionManager.beginDelayedTransition(linearLayout);
@@ -80,15 +72,15 @@ public class TrainingFragment extends Fragment {
         linearLayout.setGravity(Gravity.CENTER);
 
         Intent intent = new Intent(getContext(), GameActivity.class);
-        intent.putExtra("seconds", trainingViewModel.getSeconds().getValue());
-        intent.putExtra("lights", trainingViewModel.getLights().getValue());
+        intent.putExtra("seconds", Integer.parseInt(lightSeconds.getText().toString()));
+        intent.putExtra("lights",  Integer.parseInt(numberLight.getText().toString()));
         handlerThread = new HandlerThread("OnCheckBeforeGame");
         handlerThread.start();
         Handler handler = new Handler(handlerThread.getLooper());
 
         handler.post(() -> {
             try {
-                int connected = new DevicesDataRunnable(progressBar).execute(DevicesManager.getInstance().getDevices().toArray(new Devices[0])).get();
+                int connected = new DevicesDataRunnable(progressBar).execute(DevicesManager.getInstance().getDevices().toArray(new Device[0])).get();
                 if(connected == 0){
                     requireActivity().runOnUiThread(this::onStop);
                     Toast.makeText(getContext(), R.string.no_device, Toast.LENGTH_LONG).show();
@@ -113,6 +105,7 @@ public class TrainingFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         if(layoutParams != null)
         cardTraining.setLayoutParams(layoutParams);
         TransitionManager.beginDelayedTransition(linearLayout);

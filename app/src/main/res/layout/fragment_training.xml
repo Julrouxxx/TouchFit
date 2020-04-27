@@ -80,10 +80,10 @@
                     android:hint="10"
                     android:labelFor="@id/text_lightTime"
                     android:id="@+id/numberSecondsLight"
-                    tools:ignore="HardcodedText"
                     style="@style/cardView.TextView"
                     android:textAlignment="center"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText"/>
 
             <TextView
                     android:layout_width="wrap_content"

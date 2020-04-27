@@ -1,6 +1,8 @@
 package uqac.bigbrainstudio.touchfit.controllers;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 /**
@@ -11,9 +13,9 @@ public class DeviceButtonThread implements Runnable {
 
     private final Socket socket;
     private final DeviceListener deviceListener;
-    private final Devices device;
+    private final Device device;
 
-    public DeviceButtonThread(Socket socket, DeviceListener deviceListener, Devices device) {
+    public DeviceButtonThread(Socket socket, DeviceListener deviceListener, Device device) {
         this.socket = socket;
         this.deviceListener = deviceListener;
         this.device = device;
@@ -32,7 +34,7 @@ public class DeviceButtonThread implements Runnable {
      */
     @Override
     public void run() {
-        while(socket.isConnected())
+        while(!socket.isClosed())
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String read = input.readLine();
@@ -40,15 +42,17 @@ public class DeviceButtonThread implements Runnable {
                 return;
             }
             if(read.equals("b")){
+                device.setOn(false);
                 deviceListener.onButtonPush(device);
                 continue;
             }
             if(read.equals("t")){
+                device.setOn(false);
                 deviceListener.onTimeOut(device);
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            return;
         }
     }
 }

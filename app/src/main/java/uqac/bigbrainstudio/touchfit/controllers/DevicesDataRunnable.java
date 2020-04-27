@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
 import java.net.*;
 import java.util.*;
 
-public class DevicesDataRunnable extends AsyncTask<Devices, Integer, Integer> {
+public class DevicesDataRunnable extends AsyncTask<Device, Integer, Integer> {
     private WeakReference<ProgressBar> progressBar;
     private WeakReference<RecyclerView> recyclerView;
     private WeakReference<SwipeRefreshLayout> mSwipeRefreshLayout;
@@ -44,7 +44,7 @@ public class DevicesDataRunnable extends AsyncTask<Devices, Integer, Integer> {
     }
 
     @Override
-    protected Integer doInBackground(Devices... devices) {
+    protected Integer doInBackground(Device... devices) {
         InetAddress broadcast = null;
         Socket client;
         DatagramSocket client_socket;
@@ -90,7 +90,7 @@ public class DevicesDataRunnable extends AsyncTask<Devices, Integer, Integer> {
             e.printStackTrace();
         }
         int connected = 0;
-        for(Devices device : devices)
+        for(Device device : devices)
             device.setConnected(false);
         for (int i = 1; i <= devices.length; i++) {
             publishProgress(Math.floorDiv(i * 100, devices.length));
@@ -109,7 +109,7 @@ public class DevicesDataRunnable extends AsyncTask<Devices, Integer, Integer> {
                 }
                 client.close();
                 UUID ident = UUID.fromString(stringBuilder.toString());
-                for (Devices device1 : devices) {
+                for (Device device1 : devices) {
                     if (ident.equals(device1.getUuid())) {
                         InetAddress address = client.getInetAddress();
                         device1.setHostname(address.getHostName());

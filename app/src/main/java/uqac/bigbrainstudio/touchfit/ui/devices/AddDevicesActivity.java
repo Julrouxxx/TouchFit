@@ -22,7 +22,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import uqac.bigbrainstudio.touchfit.R;
-import uqac.bigbrainstudio.touchfit.controllers.Devices;
+import uqac.bigbrainstudio.touchfit.controllers.Device;
 import uqac.bigbrainstudio.touchfit.controllers.DevicesDataRunnable;
 import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
 
@@ -62,7 +62,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
                 }
                 if (mWifiManager.getConnectionInfo().getSSID().equals(actualSSID) && dfs.getState() == Thread.State.TERMINATED) {
                     unregisterReceiver(mWifiConnect);
-                    new DevicesDataRunnable(DevicesFragment.recyclerView).execute(DevicesManager.getInstance().getDevices().toArray(new Devices[0]));
+                    new DevicesDataRunnable(DevicesFragment.recyclerView).execute(DevicesManager.getInstance().getDevices().toArray(new Device[0]));
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
                     finish();
@@ -73,9 +73,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onBackPressed() {
-        if(dfs != null)
-            moveTaskToBack(true);
-        else
+            if(dfs == null)
             super.onBackPressed();
     }
     private final BroadcastReceiver mWifiScanReceiver = new BroadcastReceiver() {
@@ -247,7 +245,7 @@ public class AddDevicesActivity extends AppCompatActivity implements View.OnClic
             try {
                 sleep(2000);
                 DatagramSocket client_socket = new DatagramSocket(PORT);
-                Devices device = new Devices(DevicesManager.getInstance().getDevices().size(), deviceName);
+                Device device = new Device(DevicesManager.getInstance().getDevices().size(), deviceName);
                 DevicesManager.getInstance().addDevices(device);
                 byte[] data = (wifi + "\n" + password + "\n" + keyMgmt + "\n" + device.getUuid().toString() + "\n").getBytes();
                 DatagramPacket send_packet = new DatagramPacket(data, data.length, InetAddress.getByName("10.0.0.5"), PORT);

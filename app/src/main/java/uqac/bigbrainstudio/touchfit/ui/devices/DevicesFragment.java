@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import uqac.bigbrainstudio.touchfit.R;
-import uqac.bigbrainstudio.touchfit.controllers.Devices;
+import uqac.bigbrainstudio.touchfit.controllers.Device;
 import uqac.bigbrainstudio.touchfit.controllers.DevicesDataRunnable;
 import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
 
@@ -72,7 +72,7 @@ public class DevicesFragment extends Fragment {
             // devicesList.clear();
             //devicesList.addAll(DevicesManager.getInstance().getDevices());
 
-            new DevicesDataRunnable(recyclerView, mSwipeRefreshLayout).execute(DevicesManager.getInstance().getDevices().toArray(new Devices[0]));
+            new DevicesDataRunnable(recyclerView, mSwipeRefreshLayout).execute(DevicesManager.getInstance().getDevices().toArray(new Device[0]));
         });
 
 
@@ -129,7 +129,7 @@ public class DevicesFragment extends Fragment {
 
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Devices item);
+        void onListFragmentInteraction(Device item);
 
         //void onContextInteraction(Devices mItem, View view);
         //void onLongClickFragment(Devices item);

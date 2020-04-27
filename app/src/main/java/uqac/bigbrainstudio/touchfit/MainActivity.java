@@ -23,7 +23,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import uqac.bigbrainstudio.touchfit.controllers.Devices;
+import uqac.bigbrainstudio.touchfit.controllers.Device;
 import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
 import uqac.bigbrainstudio.touchfit.controllers.MultiplexDevices;
 import uqac.bigbrainstudio.touchfit.ui.LoginActivity;
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
     }
 
     @Override
-    public void onListFragmentInteraction(Devices item) {
+    public void onListFragmentInteraction(Device item) {
         item.turnOn(3);
 
 
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         //if(item.getMenuInfo())
-        Devices devices = DevicesManager.getInstance().getDeviceById(item.getOrder());
+        Device devices = DevicesManager.getInstance().getDeviceById(item.getOrder());
         if (item.getTitle().equals(getString(R.string.rename_device))) {
             EditText text = new EditText(this);
             text.setText(devices.getName());
