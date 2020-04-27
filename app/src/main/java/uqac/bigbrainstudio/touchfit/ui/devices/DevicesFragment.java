@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import uqac.bigbrainstudio.touchfit.R;
-import uqac.bigbrainstudio.touchfit.controllers.Device;
-import uqac.bigbrainstudio.touchfit.controllers.DevicesDataRunnable;
-import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
+import uqac.bigbrainstudio.touchfit.controllers.devices.Device;
+import uqac.bigbrainstudio.touchfit.controllers.devices.DevicesDataRunnable;
+import uqac.bigbrainstudio.touchfit.controllers.devices.DevicesManager;
 
 /**
  * A fragment representing a list of Items.

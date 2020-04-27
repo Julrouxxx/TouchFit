@@ -22,9 +22,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import uqac.bigbrainstudio.touchfit.R;
-import uqac.bigbrainstudio.touchfit.controllers.Device;
-import uqac.bigbrainstudio.touchfit.controllers.DevicesDataRunnable;
-import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
+import uqac.bigbrainstudio.touchfit.controllers.devices.Device;
+import uqac.bigbrainstudio.touchfit.controllers.devices.DevicesDataRunnable;
+import uqac.bigbrainstudio.touchfit.controllers.devices.DevicesManager;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import uqac.bigbrainstudio.touchfit.R;
-import uqac.bigbrainstudio.touchfit.controllers.Device;
+import uqac.bigbrainstudio.touchfit.controllers.devices.Device;
 import uqac.bigbrainstudio.touchfit.ui.devices.DevicesFragment.OnListFragmentInteractionListener;
 
 import java.util.List;

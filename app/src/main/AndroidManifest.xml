@@ -18,6 +18,9 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.game.FinishActivity"
+                android:label="@string/game_review">
+        </activity>
         <activity
                 android:name=".ui.game.GameActivity"
                 android:configChanges="orientation|keyboardHidden|screenSize"

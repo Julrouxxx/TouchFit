@@ -23,11 +23,15 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import uqac.bigbrainstudio.touchfit.controllers.Device;
-import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
-import uqac.bigbrainstudio.touchfit.controllers.MultiplexDevices;
+import uqac.bigbrainstudio.touchfit.controllers.devices.Device;
+import uqac.bigbrainstudio.touchfit.controllers.devices.DevicesManager;
+import uqac.bigbrainstudio.touchfit.controllers.devices.MultiplexDevices;
+import uqac.bigbrainstudio.touchfit.controllers.stats.Statistic;
+import uqac.bigbrainstudio.touchfit.controllers.stats.StatisticsManager;
 import uqac.bigbrainstudio.touchfit.ui.LoginActivity;
 import uqac.bigbrainstudio.touchfit.ui.devices.DevicesFragment;
+import uqac.bigbrainstudio.touchfit.ui.game.FinishActivity;
+import uqac.bigbrainstudio.touchfit.ui.home.StatsFragment;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +41,7 @@ import java.net.ServerSocket;
 import java.net.URL;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements DevicesFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements DevicesFragment.OnListFragmentInteractionListener, StatsFragment.OnListFragmentInteractionListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ServerSocket serverSocket;
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_training, R.id.nav_devices, R.id.nav_settings)
+                R.id.nav_training, R.id.nav_devices, R.id.nav_settings, R.id.nav_stats)
                 .setDrawerLayout(drawer)
                 .build();
         PowerManager powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
             finish();
         } else {
             DevicesManager.getInstance().setup();
+            StatisticsManager.getInstance().setup();
             Log.d("TouchFit user uid", mFirebaseUser.getUid());
             if(!mFirebaseUser.isAnonymous()) {
                 MenuItem logoutItem = navigationView.getMenu().findItem(R.id.logout);
@@ -167,6 +172,14 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
             return true;
         }
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onListFragmentInteraction(Statistic item) {
+        Intent intent = new Intent(this, FinishActivity.class);
+        intent.putExtra("stats", item.getKey());
+        intent.putExtra("review", true);
+        startActivity(intent);
     }
 
     private static class GetBitmapFromURLAsync extends AsyncTask<String, Void, Bitmap> {

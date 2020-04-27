@@ -1,13 +1,16 @@
 package uqac.bigbrainstudio.touchfit.ui.game;
 
-import android.content.Context;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import uqac.bigbrainstudio.touchfit.R;
-import uqac.bigbrainstudio.touchfit.controllers.Device;
-import uqac.bigbrainstudio.touchfit.controllers.DeviceListener;
-import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
+import uqac.bigbrainstudio.touchfit.controllers.devices.Device;
+import uqac.bigbrainstudio.touchfit.controllers.devices.DeviceListener;
+import uqac.bigbrainstudio.touchfit.controllers.devices.DevicesManager;
+import uqac.bigbrainstudio.touchfit.controllers.stats.Statistic;
+import uqac.bigbrainstudio.touchfit.controllers.stats.StatisticsManager;
 
 import java.util.*;
 import java.util.stream.LongStream;
@@ -21,6 +24,7 @@ public class Game implements DeviceListener {
     public static final int DEFAULT_COLOR = Color.parseColor("#0099cc");
     private final MediaPlayer goodSound;
     private final MediaPlayer wrongSound;
+    private final Activity context;
     private final Handler timerHandler = new Handler();
     private long timerPerLight;
     private List<Long> average;
@@ -31,25 +35,27 @@ public class Game implements DeviceListener {
     private ArrayList<Device> devices;
     private GameViewModel viewModel;
     private long start = 0;
+    long timing;
+
     private final Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-            long timing = System.currentTimeMillis() - start;
+            timing = System.currentTimeMillis() - start;
             int millis = (int) (timing % 1000)/10;
             int seconds = (int) (timing / 1000);
             int minutes = seconds/ 60;
             seconds = seconds % 60;
-
             viewModel.getTimer().setValue(String.format(Locale.US, "%02d:%02d:%02d", minutes, seconds, millis));
             timerHandler.postDelayed(this, 50);
         }
     };
-    public Game(int lightLeft, int switchSeconds, GameViewModel viewModel, Context context) {
+    public Game(int lightLeft, int switchSeconds, GameViewModel viewModel, Activity context) {
         this.lightLeft = lightLeft;
         this.switchSeconds = switchSeconds;
         this.viewModel = viewModel;
         this.goodSound = MediaPlayer.create(context, R.raw.correct);
         this.wrongSound = MediaPlayer.create(context, R.raw.wrong);
+        this.context = context;
         this.average = new ArrayList<>();
         viewModel.getLightLeft().setValue(lightLeft);
         devices = DevicesManager.getInstance().getDevicesConnected();
@@ -96,16 +102,12 @@ public class Game implements DeviceListener {
         getTimerHandler().postDelayed(() -> viewModel.getBackgroundColor().setValue(DEFAULT_COLOR), 1000);
         viewModel.getLightActived().postValue(++lightActivated);
         checkState();
-        average.add(timerPerLight);
-        long[] longs = new long[average.size()];
-        for(int i = 0; i < average.size(); i++) longs[i] = average.get(i);
-        double avg = LongStream.of(longs).average().getAsDouble();
 
-        viewModel.getAverage().postValue(avg/1000);
     }
 
     @Override
     public void onTimeOut(Device devices) {
+        timerPerLight = System.currentTimeMillis() - timerPerLight;
         wrongSound.start();
         viewModel.getBackgroundColor().postValue(Color.RED);
         getTimerHandler().postDelayed(() -> viewModel.getBackgroundColor().setValue(DEFAULT_COLOR), 1000);
@@ -134,6 +136,12 @@ public class Game implements DeviceListener {
     }
 
     private void checkState(){
+        average.add(timerPerLight);
+        long[] longs = new long[average.size()];
+        for(int i = 0; i < average.size(); i++) longs[i] = average.get(i);
+        double avg = LongStream.of(longs).average().getAsDouble();
+
+        viewModel.getAverage().postValue(avg/1000);
         lightTotal++;
         viewModel.getAccuracy().postValue(Math.floorDiv(lightActivated * 100, lightTotal));
 
@@ -145,9 +153,15 @@ public class Game implements DeviceListener {
     }
 
     private void stop(){
-        //TODO: Finish Intent goes here
         timerHandler.removeCallbacks(timerRunnable);
         DevicesManager.getInstance().getDevices().forEach(Device::stopListening);
-
+        Statistic statistic = new Statistic(switchSeconds, lightActivated, lightTotal, average, timing);
+        String key = StatisticsManager.getInstance().addStatistics(statistic);
+        timerHandler.postDelayed(()->{
+            Intent intent = new Intent(context, FinishActivity.class);
+            intent.putExtra("stats", key);
+            context.startActivity(intent);
+            context.finish();
+        }, 3000);
     }
 }

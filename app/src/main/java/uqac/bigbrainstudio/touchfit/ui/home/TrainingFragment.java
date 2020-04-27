@@ -14,9 +14,9 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.transition.TransitionManager;
 import uqac.bigbrainstudio.touchfit.R;
-import uqac.bigbrainstudio.touchfit.controllers.Device;
-import uqac.bigbrainstudio.touchfit.controllers.DevicesDataRunnable;
-import uqac.bigbrainstudio.touchfit.controllers.DevicesManager;
+import uqac.bigbrainstudio.touchfit.controllers.devices.Device;
+import uqac.bigbrainstudio.touchfit.controllers.devices.DevicesDataRunnable;
+import uqac.bigbrainstudio.touchfit.controllers.devices.DevicesManager;
 import uqac.bigbrainstudio.touchfit.ui.game.GameActivity;
 
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package uqac.bigbrainstudio.touchfit.controllers;
+package uqac.bigbrainstudio.touchfit.controllers.devices;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package uqac.bigbrainstudio.touchfit.controllers;
+package uqac.bigbrainstudio.touchfit.controllers.devices;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
@@ -13,14 +13,13 @@ import java.util.stream.Collectors;
 public class DevicesManager  {
     private final static DevicesManager instance = new DevicesManager();
     public ArrayList<Device> devices = new ArrayList<>();
-    private FirebaseUser mUser;
     private DatabaseReference mData;
     private boolean first = false;
 
     DevicesManager() {
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        this.mData = FirebaseDatabase.getInstance().getReference();
+
 
         /*
 
@@ -32,9 +31,10 @@ public class DevicesManager  {
 
     public void setup(){
         first =true;
-        this.mUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         assert mUser != null;
-        mData.child(mUser.getUid()).child("devices").addValueEventListener(new ValueEventListener() {
+        this.mData = FirebaseDatabase.getInstance().getReference(mUser.getUid() + "/devices");
+        mData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -81,7 +81,7 @@ public class DevicesManager  {
         return devices.stream().anyMatch(l -> l.getId() == id) ? devices.stream().filter(l -> l.getId() == id).findFirst().get() : null;
     }
     public void addDevices(Device device){
-        DatabaseReference key = mData.child(mUser.getUid()).child("devices").push();
+        DatabaseReference key = mData.push();
         Map<String, Object> childAdd = new HashMap<>();
         childAdd.put("uuid", device.getUuid().toString());
         childAdd.put("id", device.getId());
@@ -91,13 +91,13 @@ public class DevicesManager  {
 
     public void updateDevice(Device device) {
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(mUser.getUid() + "/devices/" + device.getKey() + "/name/", device.getName());
+        childUpdates.put(device.getKey() + "/name/", device.getName());
         mData.updateChildren(childUpdates);
     }
 
     public void deleteDevice(Device device) {
         device.reset();
-        mData.child(mUser.getUid()).child("devices").child(device.getKey()).removeValue();
+        mData.child(device.getKey()).removeValue();
         devices.remove(device);
     }
 

@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import uqac.bigbrainstudio.touchfit.R;
-import uqac.bigbrainstudio.touchfit.controllers.Device;
+import uqac.bigbrainstudio.touchfit.controllers.devices.Device;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

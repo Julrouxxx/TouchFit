@@ -1,4 +1,4 @@
-package uqac.bigbrainstudio.touchfit.controllers;
+package uqac.bigbrainstudio.touchfit.controllers.devices;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
