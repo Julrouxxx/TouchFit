@@ -143,9 +143,8 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
     @Override
     public void onListFragmentInteraction(Device item) {
         item.turnOn(3);
-
-
     }
+
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {

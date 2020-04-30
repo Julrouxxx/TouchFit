@@ -18,6 +18,7 @@ public class ChallengesManager {
     private DatabaseReference mData;
     private ArrayList<Challenge> challenges;
     private boolean first = true;
+    private int streaks;
     public static ChallengesManager getInstance() {
         return instance;
     }
@@ -26,28 +27,64 @@ public class ChallengesManager {
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         assert mUser != null;
         this.mData = FirebaseDatabase.getInstance().getReference(mUser.getUid() + "/challenges");
+        first = true;
         this.challenges = new ArrayList<>();
-        mData.addValueEventListener(new ValueEventListener() {
+        mData.child("streaks").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                challenges.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Challenge challenge = snapshot.getValue(Challenge.class);
-                    assert challenge != null;
-                    challenge.setKey(snapshot.getKey());
-                    challenges.add(challenge);
+                    if(dataSnapshot.getValue() == null)
+                        streaks = 0;
+                    else
+                        streaks = dataSnapshot.getValue(Integer.class);
+                    if(first)
+                mData.orderByChild("date").endAt(new Date().getTime(), "date").limitToLast(streaks+2).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        challenges.clear();
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                            if(!snapshot.getKey().equals("streaks")) {
+                                Challenge challenge = snapshot.getValue(Challenge.class);
+                                assert challenge != null;
+                                challenge.setKey(snapshot.getKey());
+                                challenges.add(challenge);
+                                //Log.i("test", "onDataChange: " + challenge.toString());
+
+                            }
+                        }
+                        if(first) {
+                            first = false;
+                            trainingFragment.showDailyChallenge();
+                            trainingFragment.checkForStreaks();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        if(databaseError.getCode() == -3) {
+                            mData.removeEventListener(this);
+                            return;
+                        }
+                        Log.e("TouchFit", "Error on reading challenges online error: " + databaseError.getCode());
+                    }
+                });
                 }
-                if(first) {
-                    first = false;
-                    trainingFragment.showDailyChallenge();
-                }
-            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("TouchFit", "Error on reading challenges online error: " + databaseError.getCode());
+                if(databaseError.getCode() == -3){
+                    mData.removeEventListener(this);
+                    return;
+                }
+                Log.e("TouchFit", "Error on reading streaks error: " + databaseError.getCode());
             }
         });
+
+    }
+
+    public void zeroStreak() {
+        streaks = 0;
+        mData.child("streaks").setValue(0, 2);
     }
 
 
@@ -58,7 +95,6 @@ public class ChallengesManager {
     public Challenge addRandomChallenge(){
         Random rdm = new Random();
         ChallengeType challengeType = ChallengeType.values()[rdm.nextInt(ChallengeType.values().length)];
-        //noinspection OptionalGetWithoutIsPresent
         Challenge challenge = new Challenge(new Date(), challengeType, rdm.ints(5, 40).findAny().getAsInt(), rdm.ints(5, 40).findAny().getAsInt());
         addChallenge(challenge);
         return challenge;
@@ -101,4 +137,11 @@ public class ChallengesManager {
 
         mData.updateChildren(childUpdates);
     }
+    public int getStreaks(){
+        return streaks;
+    }
+    public void addStreak(){
+        mData.child("streaks").setValue(streaks+1, 2);
+    }
+
 }

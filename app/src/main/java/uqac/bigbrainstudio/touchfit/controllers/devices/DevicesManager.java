@@ -55,6 +55,10 @@ public class DevicesManager  {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                if(databaseError.getCode() == -3){
+                    mData.removeEventListener(this);
+                    return;
+                }
                 Log.e("TouchFit", "Error on reading online error: " + databaseError.getCode());
             }
         });

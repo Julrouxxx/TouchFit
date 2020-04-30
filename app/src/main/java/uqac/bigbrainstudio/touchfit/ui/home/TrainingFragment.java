@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
@@ -24,6 +25,7 @@ import uqac.bigbrainstudio.touchfit.controllers.devices.DevicesDataRunnable;
 import uqac.bigbrainstudio.touchfit.controllers.devices.DevicesManager;
 import uqac.bigbrainstudio.touchfit.ui.game.GameActivity;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -47,12 +49,33 @@ public class TrainingFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getTooltipText().equals(getString(R.string.streaks))){
+            if(ChallengesManager.getInstance().getStreaks() <= 0) {
+                Toast.makeText(getContext(), R.string.collect_streaks, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            if(ChallengesManager.getInstance().getChallenges() == null || ChallengesManager.getInstance().getChallenges().isEmpty()){
+                return false;
+            }
+            Intent intent = new Intent(getContext(), StreaksActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.add(ChallengesManager.getInstance().getStreaks() +"\uD83D\uDD25").setTooltipText(getString(R.string.streaks)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_training, container, false);
 
-
-
+        setHasOptionsMenu(true);
         //TRAINING
         lightSeconds = root.findViewById(R.id.numberSecondsLight);
         numberLight = root.findViewById(R.id.numberEachLight);
@@ -70,17 +93,36 @@ public class TrainingFragment extends Fragment {
         challengesToday= root.findViewById(R.id.text_challenge);
         successOrTries = root.findViewById(R.id.text_challengeTriesOrSucces);
         goChallenge = root.findViewById(R.id.start_c_button);
-        if(ChallengesManager.getInstance().getChallenges() != null && !ChallengesManager.getInstance().getChallenges().isEmpty())
+        if(ChallengesManager.getInstance().getChallenges() != null && !ChallengesManager.getInstance().getChallenges().isEmpty()) {
             showDailyChallenge();
+
+        }
+
 
         return root;
     }
+    public void checkForStreaks(){
 
+        if (ChallengesManager.getInstance().getStreaks() >= 1) {
+            ArrayList<Challenge> challenges = ChallengesManager.getInstance().getChallenges();
+            Challenge last = challenges.isEmpty() ? null : challenges.get(challenges.size() - 2);
+            if (last != null) {
+                if (!last.isSuccess()) {
+                    Log.i("TouchFit", "Zeroing the streaks...");
+                    ChallengesManager.getInstance().zeroStreak();
+                }
+            }
+            getActivity().invalidateOptionsMenu();
+        }
+    }
     @Override
-    public void onResume() {
+    public void onStart() {
         super.onResume();
-        if(ChallengesManager.getInstance().getChallenges() != null && !ChallengesManager.getInstance().getChallenges().isEmpty())
+        if(ChallengesManager.getInstance().getChallenges() != null && !ChallengesManager.getInstance().getChallenges().isEmpty()) {
             showDailyChallenge();
+
+            Objects.requireNonNull(getActivity()).invalidateOptionsMenu();
+        }
     }
 
     private void onClickChallenge(View l){
@@ -88,7 +130,6 @@ public class TrainingFragment extends Fragment {
         requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         TransitionManager.beginDelayedTransition(linearLayout);
-
         progressBar.setVisibility(View.VISIBLE);
         cardTraining.setVisibility(View.GONE);
         linearLayout.setGravity(Gravity.CENTER);

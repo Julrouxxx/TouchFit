@@ -20,7 +20,6 @@ public class StatisticsManager {
     private FirebaseUser mUser;
     private DatabaseReference mData;
     private ArrayList<Statistic> statistics;
-
     public static StatisticsManager getInstance() {
         return instance;
     }
@@ -29,21 +28,25 @@ public class StatisticsManager {
         this.mUser = FirebaseAuth.getInstance().getCurrentUser();
         this.mData = FirebaseDatabase.getInstance().getReference(mUser.getUid() + "/stats");
         this.statistics = new ArrayList<>();
-        mData.addValueEventListener(new ValueEventListener() {
+        mData.orderByChild("date").limitToLast(100).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 statistics.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Statistic statistic = snapshot.getValue(Statistic.class);
-                    assert statistic != null;
-                    statistic.setKey(snapshot.getKey());
-                    statistics.add(statistic);
+                        Statistic statistic = snapshot.getValue(Statistic.class);
+                        assert statistic != null;
+                        statistic.setKey(snapshot.getKey());
+                        statistics.add(statistic);
                 }
                 Collections.sort(statistics);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                if(databaseError.getCode() == -3){
+                    mData.removeEventListener(this);
+                    return;
+                }
                 Log.e("TouchFit", "Error on reading stats online error: " + databaseError.getCode());
             }
         });

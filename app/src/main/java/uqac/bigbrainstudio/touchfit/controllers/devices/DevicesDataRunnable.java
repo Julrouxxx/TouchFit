@@ -113,7 +113,7 @@ public class DevicesDataRunnable extends AsyncTask<Device, Integer, Integer> {
                 for (Device device1 : devices) {
                     if (ident.equals(device1.getUuid())) {
                         InetAddress address = client.getInetAddress();
-                        device1.setHostname(address.getHostName());
+                        device1.setHostname(address.getHostName() + "/" + address.getHostAddress());
                         device1.setIp(address);
                         device1.setConnected(true);
                         connected++;

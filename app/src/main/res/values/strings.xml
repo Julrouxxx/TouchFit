@@ -73,5 +73,8 @@
     <string name="success">Success!</string>
     <string name="Tries_so_far">%d tries so far…</string>
     <string name="never_tester">Never tested yet</string>
+    <string name="streaks">Streaks</string>
+    <string name="collect_streaks">Collect more streaks to see older challenges</string>
+    <string name="day_nbr">Day %d</string>
 
 </resources>

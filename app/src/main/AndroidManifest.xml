@@ -18,7 +18,12 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.game.FinishActivity"
+        <activity android:name=".ui.home.StreaksActivity"
+                android:parentActivityName=".MainActivity"
+                android:label="@string/streaks">
+        </activity>
+        <activity
+                android:name=".ui.game.FinishActivity"
                 android:label="@string/game_review">
         </activity>
         <activity

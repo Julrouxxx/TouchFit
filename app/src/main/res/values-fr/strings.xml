@@ -73,5 +73,8 @@
     <string name="success">Réussi !</string>
     <string name="Tries_so_far">%d essais…</string>
     <string name="never_tester">Pas encore d\'essai</string>
+    <string name="streaks">Jours d\'affilés</string>
+    <string name="collect_streaks">Faites plus de jours d\'affillés pour voir vos anciens challenges</string>
+    <string name="day_nbr">Jour %d</string>
 
 </resources>

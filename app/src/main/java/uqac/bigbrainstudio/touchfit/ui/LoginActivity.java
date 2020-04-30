@@ -21,6 +21,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.FirebaseDatabase;
 import uqac.bigbrainstudio.touchfit.MainActivity;
 import uqac.bigbrainstudio.touchfit.R;
 
@@ -69,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mFirebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this);
+            .addOnCompleteListener(this);
     }
 
     @Override
@@ -82,6 +83,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 assert account != null;
+
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -113,17 +115,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mFirebaseAuth.signInAnonymously().addOnCompleteListener(this);
 
     }
-
     @Override
-    public void onComplete(@NonNull Task task) {
+    public void onComplete(@NonNull Task<AuthResult> task) {
         loadingProgressBar.setVisibility(View.INVISIBLE);
 
 
 
         if (task.isSuccessful()) {
             // Sign in success, update UI with the signed-in user's information
-            Log.d("TouchFit", "signInWithCredential:success");
+            Log.d("TouchFit", "signInWithCredential:success, connected to " + mFirebaseAuth.getCurrentUser().getDisplayName());
             launchMainActivity();
+            if(task.getResult().getAdditionalUserInfo().isNewUser()){
+                Log.d("TouchFit", "onComplete: new user, welcome!");
+                FirebaseDatabase.getInstance().getReference(mFirebaseAuth.getCurrentUser().getUid() + "/challenges/streaks").setValue(0, 2);
+            }
             finish();
         } else {
             // If sign in fails, display a message to the user.

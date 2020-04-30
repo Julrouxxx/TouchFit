@@ -1,5 +1,6 @@
 package uqac.bigbrainstudio.touchfit.controllers.challenges;
 
+import androidx.annotation.NonNull;
 import com.google.firebase.database.Exclude;
 import uqac.bigbrainstudio.touchfit.ui.game.Game;
 import uqac.bigbrainstudio.touchfit.ui.game.GameActivity;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Challenge {
+public class Challenge{
     private long date;
     private String key;
     private Game game;
@@ -86,6 +87,7 @@ public class Challenge {
     }
 
     public void pass(){
+        ChallengesManager.getInstance().addStreak();
         this.success = true;
     }
 
@@ -93,4 +95,15 @@ public class Challenge {
         this.tries++;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Challenge{");
+        sb.append("date=").append(date);
+        sb.append(", key='").append(key).append('\'');
+        sb.append(", success=").append(success);
+        sb.append(", tries=").append(tries);
+        sb.append('}');
+        return sb.toString();
+    }
 }
