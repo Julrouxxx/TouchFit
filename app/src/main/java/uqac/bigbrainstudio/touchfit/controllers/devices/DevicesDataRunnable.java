@@ -71,7 +71,7 @@ public class DevicesDataRunnable extends AsyncTask<Device, Integer, Integer> {
                 assert wifiManager != null;
                 wifiManager.setWifiEnabled(true);
             }).show();
-            return null;
+            return 0;
         }
 
 
@@ -102,6 +102,7 @@ public class DevicesDataRunnable extends AsyncTask<Device, Integer, Integer> {
                 BufferedReader inFromClient =
                         new BufferedReader(new InputStreamReader(client.getInputStream()));
                 char[] buffer = new char[36];
+                //noinspection ResultOfMethodCallIgnored
                 inFromClient.read(buffer, 0, 36);
                 StringBuilder stringBuilder = new StringBuilder();
                 for (char c : buffer) {
@@ -131,6 +132,7 @@ public class DevicesDataRunnable extends AsyncTask<Device, Integer, Integer> {
         recyclerView.get().post(() -> Objects.requireNonNull(recyclerView.get().getAdapter()).notifyDataSetChanged());
 
         try {
+            if(pingSocket != null)
             pingSocket.close();
         } catch (IOException e) {
             e.printStackTrace();

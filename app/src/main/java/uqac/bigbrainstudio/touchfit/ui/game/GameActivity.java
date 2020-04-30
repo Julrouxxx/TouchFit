@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import uqac.bigbrainstudio.touchfit.R;
+import uqac.bigbrainstudio.touchfit.controllers.challenges.ChallengesManager;
 import uqac.bigbrainstudio.touchfit.controllers.devices.Device;
 
 /**
@@ -153,8 +154,8 @@ public class GameActivity extends AppCompatActivity {
         // while interacting with the UI.
 
         Intent intent = getIntent();
-
-        game = new Game(intent.getIntExtra("lights", 10), intent.getIntExtra("seconds", 5), viewModelProvider, this);
+        if(intent.getBooleanExtra("challenge", false)) game = ChallengesManager.getInstance().getTodayChallenge().getGame(viewModelProvider, this);
+        else game = new Game(intent.getIntExtra("lights", 10), intent.getIntExtra("seconds", 5), viewModelProvider, this);
 
         findViewById(R.id.stop_button).setOnTouchListener(mDelayHideTouchListener);
         findViewById(R.id.stop_button).setOnClickListener(v -> finish());

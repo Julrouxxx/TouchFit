@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">TouchFit</string>
+    <string name="navigation_drawer_open">Ouvrir le menu de navigation</string>
+    <string name="navigation_drawer_close">Fermer le menu de navigation</string>
+    <string name="nav_header_title">Déconnecté</string>
+    <string name="nav_header_subtitle">Connectez vous pour sauvegarder vos résultats</string>
+    <string name="nav_header_desc">Header de navigation</string>
+    <string name="action_settings">Paramètres</string>
+
+    <string name="menu_training">Entraînement</string>
+    <string name="menu_devices">Lampes</string>
+    <string name="menu_settings">Paramètres</string>
+    <string name="customize_label">Personnaliser</string>
+    <string name="edit_device">Editer l\'appareil</string>
+    <string name="online_status">Connecté</string>
+    <string name="offline_status">Déconnecté</string>
+    <string name="title_activity_login">Se connecter</string>
+    <string name="action_sign_in">Se connecter ou s\'inscrire avec Google</string>
+    <string name="action_sign_in_short">Se connecter</string>
+    <string name="welcome">"Bienvenue !"</string>
+    <string name="login_failed">"La connection a échoué"</string>
+    <string name="action_sign_in_ano">Mode invité</string>
+    <string name="anonymous">Invité</string>
+    <string name="logout">Se déconnecter</string>
+    <string name="connect_to_wifi">Veuillez activer le WiFi</string>
+    <string name="activate_wifi">Activer</string>
+    <string name="add_new_light">Ajouter une lampe</string>
+    <string name="next">Suivant</string>
+    <string name="choose_wifi">Choisir la lampe</string>
+    <string name="accept_location_permission">Ne peut pas scanner les appareils adjacents, veuillez accepter la permission</string>
+    <string name="not_found">Aucune lampe trouvée!</string>
+    <string name="connect_to_your_wifi">Veuillez d\'abord vous connecter à votre WiFi</string>
+    <string name="choose_a_light">Choisissez une lampe: </string>
+    <string name="network_settings">Paramètres de %s: </string>
+    <string name="security_s">Sécurité: %s</string>
+    <string name="wifi_password">Mot de passe du WiFi</string>
+    <string name="sign_in_failed_connection">L\'authentification Google a échoué, veuillez vérifier votre connexion</string>
+    <string name="auth_failed">L\'authentification a échoué.</string>
+    <string name="choose_a_device_name">Choisissez un nom</string>
+    <string name="delete_device">Supprimer</string>
+    <string name="rename_device">Renommer</string>
+    <string name="rename_device_to">Renommer les appareils</string>
+    <string name="delete_advice">Suppression… La lampe va être réinitialisée</string>
+    <string name="training">Entraînement</string>
+    <string name="light_max_time">Temps max par lampe:</string>
+    <string name="challenges">Challenge du jour</string>
+    <string name="seconds">sec.</string>
+    <string name="light_each">Nombre de lampes à activer : </string>
+    <string name="let_s_go">On y va !</string>
+
+    <string name="title_activity_game">Jeu</string>
+    <string name="no_device">Aucune lampe connectée trouvée ! Veuillez ajouter des lampes avant de comment la partie</string>
+    <string name="please_provide">Veuillez entrer un nombre</string>
+    <string name="connected_not_ready">Connecté mais pas prêt</string>
+    <string name="stop_game">Stop</string>
+    <string name="lights_accuracy">Précision</string>
+    <string name="average">Moyenne :</string>
+    <string name="lights_left">Lampes restantes :</string>
+    <string name="light_activated">Lampes activées :</string>
+    <string name="light_activated_stats">%1$d/%2$d</string>
+    <string name="averageData">%f sec/lampe</string>
+    <string name="accuracy">%d%%</string>
+    <string name="game_review">Récapitulatif de la partie</string>
+    <string name="game_finished">Partie finie !</string>
+
+    <string name="hello_blank_fragment">Bonjour fragment blanc</string>
+    <string name="stats">Statistiques</string>
+    <string name="time">Temps :</string>
+    <string name="activated_by_total">Activées/Total</string>
+    <string name="warning_psm">"Attention! Cette application n'est pas optimisé avec le mode économie d'énergie activé "</string>
+    <string name="no_fails_challenge">Pas d\'erreur avec %d lumières et %d sec. par lumières</string>
+    <string name="lights_seconds_challenge">Essayez d\'eteindre %d lumières en moins de %d sec!</string>
+    <string name="success">Réussi !</string>
+    <string name="Tries_so_far">%d essais…</string>
+    <string name="never_tester">Pas encore d\'essai</string>
+
+</resources>

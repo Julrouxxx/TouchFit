@@ -22,10 +22,6 @@
 
     <item android:title="@string/customize_label">
         <menu>
-        <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_settings_menu"
-                android:title="@string/menu_settings"/>
 
             <item
                 android:id="@+id/logout"

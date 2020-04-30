@@ -22,22 +22,22 @@ import java.util.stream.LongStream;
 public class Game implements DeviceListener {
 
     public static final int DEFAULT_COLOR = Color.parseColor("#0099cc");
-    private final MediaPlayer goodSound;
-    private final MediaPlayer wrongSound;
-    private final Activity context;
-    private final Handler timerHandler = new Handler();
-    private long timerPerLight;
-    private List<Long> average;
-    private int lightLeft;
-    private int switchSeconds;
-    private int lightActivated;
-    private int lightTotal;
-    private ArrayList<Device> devices;
-    private GameViewModel viewModel;
-    private long start = 0;
-    long timing;
+    protected final MediaPlayer goodSound;
+    protected final MediaPlayer wrongSound;
+    protected final Activity context;
+    protected final Handler timerHandler = new Handler();
+    protected long timerPerLight;
+    protected List<Long> average;
+    protected int lightLeft;
+    protected int switchSeconds;
+    protected int lightActivated;
+    protected int lightTotal;
+    protected ArrayList<Device> devices;
+    protected GameViewModel viewModel;
+    protected long start = 0;
+    protected long timing;
 
-    private final Runnable timerRunnable = new Runnable() {
+    protected final Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
             timing = System.currentTimeMillis() - start;
@@ -119,6 +119,10 @@ public class Game implements DeviceListener {
         Random rdm = new Random();
         while(devices.size() != lightLeft){
             if(add){
+                if(DevicesManager.getInstance().getDevicesConnected().size() -1 == 0){
+                    devices.add(DevicesManager.getInstance().getDevicesConnected().get(0));
+                    continue;
+                }
                 devices.add(devices.get(rdm.nextInt(DevicesManager.getInstance().getDevices().size() -1)));
             }else{
                 devices.remove(rdm.nextInt(DevicesManager.getInstance().getDevices().size() -1));
@@ -127,7 +131,7 @@ public class Game implements DeviceListener {
         Collections.shuffle(devices);
     }
 
-    private Device lightOn(){
+    protected Device lightOn(){
         Device device = devices.remove(0);
         device.turnOn(switchSeconds);
         timerPerLight = System.currentTimeMillis();
@@ -139,6 +143,7 @@ public class Game implements DeviceListener {
         average.add(timerPerLight);
         long[] longs = new long[average.size()];
         for(int i = 0; i < average.size(); i++) longs[i] = average.get(i);
+        //noinspection OptionalGetWithoutIsPresent
         double avg = LongStream.of(longs).average().getAsDouble();
 
         viewModel.getAverage().postValue(avg/1000);
@@ -152,7 +157,7 @@ public class Game implements DeviceListener {
         timerHandler.postDelayed(this::lightOn, 1000);
     }
 
-    private void stop(){
+    protected void stop(){
         timerHandler.removeCallbacks(timerRunnable);
         DevicesManager.getInstance().getDevices().forEach(Device::stopListening);
         Statistic statistic = new Statistic(switchSeconds, lightActivated, lightTotal, average, timing);

@@ -10,7 +10,7 @@
     <string name="menu_training">Training</string>
     <string name="menu_devices">Light devices</string>
     <string name="menu_settings">Settings</string>
-    <string name="customize_label">Customize</string>
+    <string name="customize_label">Account</string>
     <string name="edit_device">Edit device</string>
     <string name="online_status">Connected</string>
     <string name="offline_status">Disconnected</string>
@@ -40,33 +40,38 @@
     <string name="delete_device">Delete</string>
     <string name="rename_device">Rename</string>
     <string name="rename_device_to">Rename device</string>
-    <string name="delete_advice">Deleting… The Light will be reseted</string>
+    <string name="delete_advice">Deleting… The Light will be reset</string>
     <string name="training">Training</string>
     <string name="light_max_time">Light max time:</string>
-    <string name="challenges">Challenges</string>
+    <string name="challenges">Challenge of the day</string>
     <string name="seconds">sec.</string>
-    <string name="light_each">Number of light to activate: </string>
+    <string name="light_each">Number of lights to activate: </string>
     <string name="let_s_go">Let\'s Go</string>
 
     <string name="title_activity_game">Game</string>
-    <string name="warning_psm">Warning! This application is not optimized in PowerSave Mode</string>
+    <string name="warning_psm">Warning! This application is not optimized for PowerSave Mode</string>
     <string name="no_device">No lights connected found! Please add lights before starting game</string>
-    <string name="please_provide">Please, enter a number</string>
+    <string name="please_provide">Please enter a number</string>
     <string name="connected_not_ready">Connected but not ready</string>
     <string name="stop_game">Stop</string>
     <string name="lights_accuracy">Accuracy</string>
     <string name="average">Average:</string>
     <string name="lights_left">Lights left:</string>
     <string name="light_activated">Light activated:</string>
-    <string name="light_activated_stats">%d/%d</string>
+    <string name="light_activated_stats">%1$d/%2$d</string>
     <string name="averageData">%f sec/light</string>
     <string name="accuracy">%d%%</string>
     <string name="game_review">Game Review</string>
-    <string name="game_finished">Game Finshed!</string>
+    <string name="game_finished">Game Finished!</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="stats">Statistics</string>
     <string name="time">Time:</string>
     <string name="activated_by_total">Activated/Total</string>
+    <string name="no_fails_challenge">No Fails Challenge with %d lights and %d sec. per lights</string>
+    <string name="lights_seconds_challenge">Try to turn off %d lights in less than %d sec!</string>
+    <string name="success">Success!</string>
+    <string name="Tries_so_far">%d tries so far…</string>
+    <string name="never_tester">Never tested yet</string>
 
 </resources>

@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements DevicesFragment.O
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_training, R.id.nav_devices, R.id.nav_settings, R.id.nav_stats)
+                R.id.nav_training, R.id.nav_devices, R.id.nav_stats)
                 .setDrawerLayout(drawer)
                 .build();
         PowerManager powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
